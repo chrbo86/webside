@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privat — Christian</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navbar -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">Christian</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Hjem</a></li>
+      <li id="nav-logout-item" style="display:none;">
+        <button class="btn-logout" id="nav-logout">Logg ut</button>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ======= Oppsettvisning (vises kun første gang, når ingen hash er satt) ======= -->
+  <div id="setup-view" class="auth-page" style="display:none;">
+    <div class="auth-card">
+      <h2>Velg passord</h2>
+      <p>Første gangs oppsett. Skriv inn ønsket passord — du får en hash-streng som du limer inn i <code>privat.js</code>.</p>
+
+      <input class="auth-input" type="password" id="setup-pw" placeholder="Velg et passord" autocomplete="new-password" />
+      <button class="btn-primary" id="setup-btn">Generer hash</button>
+
+      <div id="setup-result" style="display:none;">
+        <p style="margin-top:1.25rem; margin-bottom:0;">
+          Kopier denne hash-verdien og lim den inn som verdien av <code>PASSWORD_HASH</code> i <code>privat.js</code>:
+        </p>
+        <div class="hash-box" id="hash-output"></div>
+
+        <div class="setup-step">
+          <span class="step-num">1</span>
+          <span>Kopier hash-verdien over</span>
+        </div>
+        <div class="setup-step">
+          <span class="step-num">2</span>
+          <span>Åpne <code>privat.js</code> og finn linjen <code>const PASSWORD_HASH = "";</code></span>
+        </div>
+        <div class="setup-step">
+          <span class="step-num">3</span>
+          <span>Erstatt <code>""</code> med hash-verdien i anførselstegn</span>
+        </div>
+        <div class="setup-step">
+          <span class="step-num">4</span>
+          <span>Lagre filen og last inn denne siden på nytt</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= Innloggingsvisning ======= -->
+  <div id="login-view" class="auth-page" style="display:none;">
+    <div class="auth-card">
+      <h2>Privat område</h2>
+      <p>Kun for Christian. Skriv inn passord for å fortsette.</p>
+      <input class="auth-input" type="password" id="login-pw" placeholder="Passord" autocomplete="current-password" />
+      <button class="btn-primary" id="login-btn">Logg inn</button>
+      <p class="auth-error" id="login-error">Feil passord. Prøv igjen.</p>
+    </div>
+  </div>
+
+  <!-- ======= Dashboard (vises etter innlogging) ======= -->
+  <div id="dashboard-view" class="dashboard" style="display:none;">
+    <div class="container" style="padding: 2rem;">
+
+      <div class="dash-header">
+        <h1 class="section-title" style="margin-bottom:0;">Mitt område</h1>
+        <button class="btn-logout" id="dashboard-logout">Logg ut</button>
+      </div>
+
+      <!-- Smarthus -->
+      <section style="margin-bottom: 3rem;">
+        <h2 class="section-title">Smarthus</h2>
+        <div class="dash-grid" id="smarthus-grid">
+          <!-- Fylles inn av privat.js -->
+        </div>
+      </section>
+
+      <!-- Morgenbrief -->
+      <section style="margin-bottom: 3rem;">
+        <h2 class="section-title">Morgenbrief</h2>
+        <div class="dash-grid" id="morgenbrief-grid">
+          <!-- Fylles inn av privat.js -->
+        </div>
+      </section>
+
+    </div>
+  </div>
+
+  <script src="privat.js"></script>
+</body>
+</html>
