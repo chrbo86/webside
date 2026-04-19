@@ -153,134 +153,288 @@ def generate_brief(articles: list[dict], date_str: str) -> dict:
 
 CSS = """
 :root {
-  --navy: #1a2e4a;
-  --blue: #1a5276;
-  --light-blue: #a8c4d8;
-  --bg: #f5f5f0;
-  --card-bg: #ffffff;
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface2: #f0eeea;
   --text: #1a1a1a;
-  --muted: #666;
-  --border: #e8e8e4;
-  --accent: #e8f4f8;
+  --text-muted: #6b7280;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --border: #e5e3de;
+  --header-bg: #0f172a;
+  --header-text: #f1f5f9;
+  --header-muted: #94a3b8;
+  --badge-bg: #1e293b;
+  --footer-bg: #0f172a;
+  --footer-text: #64748b;
+  --watchlist-bg: #eff6ff;
+  --watchlist-border: #2563eb;
+  --toggle-bg: #334155;
+  --toggle-icon: "🌙";
+}
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #273548;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --accent: #60a5fa;
+  --accent-light: #1e3a5f;
+  --border: #334155;
+  --header-bg: #020617;
+  --header-text: #f1f5f9;
+  --header-muted: #64748b;
+  --badge-bg: #334155;
+  --footer-bg: #020617;
+  --footer-text: #475569;
+  --watchlist-bg: #1e3a5f;
+  --watchlist-border: #60a5fa;
+  --toggle-bg: #60a5fa;
+  --toggle-icon: "☀️";
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.65;
+  transition: background 0.2s, color 0.2s;
 }
-a { color: var(--blue); }
-.wrapper { max-width: 700px; margin: 0 auto; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrapper { max-width: 720px; margin: 0 auto; }
 
 /* Header */
 .site-header {
-  background: var(--navy);
-  padding: 28px 40px;
+  background: var(--header-bg);
+  padding: 24px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
 }
-.site-header h1 { color: #fff; font-size: 22px; }
-.site-header p  { color: var(--light-blue); font-size: 13px; font-family: Arial, sans-serif; }
-.site-header nav a {
-  color: var(--light-blue);
-  font-size: 13px;
-  font-family: Arial, sans-serif;
-  text-decoration: none;
-  margin-left: 16px;
-  border-bottom: 1px solid transparent;
+.header-left h1 {
+  color: var(--header-text);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
-.site-header nav a:hover { border-bottom-color: var(--light-blue); }
+.header-left p { color: var(--header-muted); font-size: 13px; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.site-header nav a {
+  color: var(--header-muted);
+  font-size: 13px;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.site-header nav a:hover,
+.site-header nav a.active { color: var(--header-text); border-bottom-color: var(--accent); }
+
+/* Theme toggle */
+.theme-toggle {
+  background: var(--toggle-bg);
+  border: none;
+  border-radius: 20px;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+[data-theme="dark"] .theme-toggle::after { transform: translateX(20px); }
+.theme-toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.theme-toggle-wrap span { font-size: 14px; line-height: 1; }
 
 /* Content */
-.content { padding: 32px 40px; }
+.content { padding: 36px 40px; }
+
+/* Date badge */
+.date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--badge-bg);
+  color: var(--header-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  letter-spacing: 0.3px;
+}
 
 /* Sections */
-.section { margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 28px; }
-.section:last-of-type { border-bottom: none; }
+.section { margin-bottom: 36px; }
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin-bottom: 28px;
+}
 .section-title {
-  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--blue);
+  letter-spacing: 1.8px;
+  color: var(--text-muted);
   margin-bottom: 16px;
-  font-family: Arial, sans-serif;
 }
-.news-item { margin-bottom: 16px; }
-.news-item strong { display: block; font-size: 16px; margin-bottom: 4px; }
-.news-item p { font-size: 15px; color: #3a3a3a; }
-.news-item .source { font-size: 12px; color: var(--muted); font-family: Arial, sans-serif; margin-top: 3px; }
-.news-item .source a { color: var(--blue); }
+
+/* News items */
+.news-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.15s;
+}
+.news-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+[data-theme="dark"] .news-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.news-item strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+.news-item p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.news-item .source {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.news-item .source::before { content: "↗"; font-size: 10px; }
+.news-item .source a { color: var(--accent); font-weight: 500; }
 
 /* Watchlist */
 .watchlist {
-  background: var(--accent);
-  border-left: 4px solid var(--blue);
+  background: var(--watchlist-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--watchlist-border);
   padding: 20px 24px;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 10px 10px 0;
+  margin-top: 8px;
 }
 .watchlist h3 {
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--blue);
-  font-family: Arial, sans-serif;
-  margin-bottom: 12px;
+  letter-spacing: 1.8px;
+  color: var(--accent);
+  margin-bottom: 14px;
 }
-.watchlist ul { padding-left: 18px; }
-.watchlist li { font-size: 14px; margin-bottom: 8px; }
-.watchlist li strong { font-size: 14px; }
+.watchlist ul { padding-left: 0; list-style: none; }
+.watchlist li {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 10px;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+.watchlist li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.watchlist li strong { font-weight: 600; }
 
 /* Archive list */
 .archive-list { list-style: none; }
 .archive-list li {
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0;
-  font-family: Arial, sans-serif;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: box-shadow 0.15s;
 }
-.archive-list li a { font-size: 15px; font-weight: 600; }
-.archive-list li span { font-size: 13px; color: var(--muted); margin-left: 8px; }
-
-/* Date badge */
-.date-badge {
-  display: inline-block;
-  background: var(--navy);
-  color: #fff;
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  padding: 3px 10px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+.archive-list li:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.archive-list li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
 }
+.archive-list li a:hover { color: var(--accent); }
+.archive-list li a span { font-size: 13px; color: var(--text-muted); font-weight: 400; }
 
 /* Footer */
 .site-footer {
-  background: var(--navy);
-  padding: 18px 40px;
+  background: var(--footer-bg);
+  padding: 20px 40px;
   text-align: center;
-  font-family: Arial, sans-serif;
   font-size: 12px;
-  color: #7f8c8d;
+  color: var(--footer-text);
+  margin-top: 12px;
 }
 
 @media (max-width: 600px) {
-  .site-header, .content { padding: 20px; }
+  .site-header, .content { padding: 18px 20px; }
+  .site-footer { padding: 18px 20px; }
 }
+"""
+
+THEME_SCRIPT = """
+<script>
+(function(){
+  var t = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<script>
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme');
+  var next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+</script>
 """
 
 
 def _nav(current: str = "brief") -> str:
-    archive_active = ' style="border-bottom-color:var(--light-blue)"' if current == "archive" else ""
-    brief_active   = ' style="border-bottom-color:var(--light-blue)"' if current == "brief"   else ""
+    archive_class = ' class="active"' if current == "archive" else ""
+    brief_class   = ' class="active"' if current == "brief"   else ""
     return (
+        f'<div class="header-right">'
         f'<nav>'
-        f'<a href="/webside/"{brief_active}>Siste brief</a>'
-        f'<a href="/webside/archive/"{archive_active}>Arkiv</a>'
+        f'<a href="/webside/"{brief_class}>Siste brief</a>'
+        f'<a href="/webside/archive/"{archive_class}>Arkiv</a>'
         f'</nav>'
+        f'<div class="theme-toggle-wrap">'
+        f'<span>☀️</span>'
+        f'<button class="theme-toggle" onclick="toggleTheme()" aria-label="Bytt tema"></button>'
+        f'<span>🌙</span>'
+        f'</div>'
+        f'</div>'
     )
 
 
@@ -305,9 +459,11 @@ def render_brief_html(brief: dict, date_str: str, date_obj: datetime) -> str:
           {src}
         </div>"""
 
+        divider = '<hr class="section-divider">' if sections_html else ""
         sections_html += f"""
+      {divider}
       <div class="section">
-        <div class="section-title">{sec["emoji"]} {sec["title"]}</div>
+        <div class="section-title"><span>{sec["emoji"]}</span>{sec["title"]}</div>
         {items_html}
       </div>"""
 
@@ -330,12 +486,13 @@ def render_brief_html(brief: dict, date_str: str, date_obj: datetime) -> str:
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Morgenbrief – {human_date}</title>
+{THEME_SCRIPT}
 <style>{CSS}</style>
 </head>
 <body>
 <div class="wrapper">
   <header class="site-header">
-    <div><h1>☕ Morgenbrief</h1><p>Nyheter fra de siste 48 timene</p></div>
+    <div class="header-left"><h1>☕ Morgenbrief</h1><p>Nyheter fra de siste 48 timene</p></div>
     {_nav("brief")}
   </header>
   <div class="content">
@@ -365,16 +522,17 @@ def render_archive_html(entries: list[dict]) -> str:
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Morgenbrief – Arkiv</title>
+{THEME_SCRIPT}
 <style>{CSS}</style>
 </head>
 <body>
 <div class="wrapper">
   <header class="site-header">
-    <div><h1>☕ Morgenbrief</h1><p>Arkiv – alle utgaver</p></div>
+    <div class="header-left"><h1>☕ Morgenbrief</h1><p>Arkiv – alle utgaver</p></div>
     {_nav("archive")}
   </header>
   <div class="content">
-    <div class="section-title" style="margin-bottom:20px">📚 Alle utgaver</div>
+    <div class="date-badge">📚 Alle utgaver</div>
     <ul class="archive-list">
       {items_html}
     </ul>
