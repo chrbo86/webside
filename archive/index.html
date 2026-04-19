@@ -5,16 +5,139 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Morgenbrief – Arkiv</title>
 <style>
-  body { font-family: Georgia, serif; background: #f5f5f0; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-  .card { background: #fff; max-width: 500px; padding: 48px 40px; text-align: center; border-radius: 4px; }
-  h1 { color: #1a2e4a; font-size: 24px; }
-  p { color: #555; margin-top: 12px; }
+:root {
+  --navy: #1a2e4a;
+  --blue: #1a5276;
+  --light-blue: #a8c4d8;
+  --bg: #f5f5f0;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --muted: #666;
+  --border: #e8e8e4;
+  --accent: #e8f4f8;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: Georgia, "Times New Roman", serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+}
+a { color: var(--blue); }
+.wrapper { max-width: 700px; margin: 0 auto; }
+
+/* Header */
+.site-header {
+  background: var(--navy);
+  padding: 28px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.site-header h1 { color: #fff; font-size: 22px; }
+.site-header p  { color: var(--light-blue); font-size: 13px; font-family: Arial, sans-serif; }
+.site-header nav a {
+  color: var(--light-blue);
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  text-decoration: none;
+  margin-left: 16px;
+  border-bottom: 1px solid transparent;
+}
+.site-header nav a:hover { border-bottom-color: var(--light-blue); }
+
+/* Content */
+.content { padding: 32px 40px; }
+
+/* Sections */
+.section { margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 28px; }
+.section:last-of-type { border-bottom: none; }
+.section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--blue);
+  margin-bottom: 16px;
+  font-family: Arial, sans-serif;
+}
+.news-item { margin-bottom: 16px; }
+.news-item strong { display: block; font-size: 16px; margin-bottom: 4px; }
+.news-item p { font-size: 15px; color: #3a3a3a; }
+.news-item .source { font-size: 12px; color: var(--muted); font-family: Arial, sans-serif; margin-top: 3px; }
+.news-item .source a { color: var(--blue); }
+
+/* Watchlist */
+.watchlist {
+  background: var(--accent);
+  border-left: 4px solid var(--blue);
+  padding: 20px 24px;
+  border-radius: 0 4px 4px 0;
+}
+.watchlist h3 {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--blue);
+  font-family: Arial, sans-serif;
+  margin-bottom: 12px;
+}
+.watchlist ul { padding-left: 18px; }
+.watchlist li { font-size: 14px; margin-bottom: 8px; }
+.watchlist li strong { font-size: 14px; }
+
+/* Archive list */
+.archive-list { list-style: none; }
+.archive-list li {
+  border-bottom: 1px solid var(--border);
+  padding: 12px 0;
+  font-family: Arial, sans-serif;
+}
+.archive-list li a { font-size: 15px; font-weight: 600; }
+.archive-list li span { font-size: 13px; color: var(--muted); margin-left: 8px; }
+
+/* Date badge */
+.date-badge {
+  display: inline-block;
+  background: var(--navy);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  padding: 3px 10px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+/* Footer */
+.site-footer {
+  background: var(--navy);
+  padding: 18px 40px;
+  text-align: center;
+  font-family: Arial, sans-serif;
+  font-size: 12px;
+  color: #7f8c8d;
+}
+
+@media (max-width: 600px) {
+  .site-header, .content { padding: 20px; }
+}
 </style>
 </head>
 <body>
-<div class="card">
-  <h1>📚 Arkiv</h1>
-  <p>Ingen utgaver ennå. Arkivet fylles opp etter første kjøring.</p>
+<div class="wrapper">
+  <header class="site-header">
+    <div><h1>☕ Morgenbrief</h1><p>Arkiv – alle utgaver</p></div>
+    <nav><a href="/webside/">Siste brief</a><a href="/webside/archive/" style="border-bottom-color:var(--light-blue)">Arkiv</a></nav>
+  </header>
+  <div class="content">
+    <div class="section-title" style="margin-bottom:20px">📚 Alle utgaver</div>
+    <ul class="archive-list">
+      <li><a href="/webside/archive/2026-04-19.html">Søndag 19. april 2026</a><span>2026-04-19</span></li>
+    </ul>
+  </div>
+  <footer class="site-footer">Automatisk generert av Claude</footer>
 </div>
 </body>
 </html>
