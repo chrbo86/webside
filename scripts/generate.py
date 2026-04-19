@@ -21,6 +21,44 @@ from zoneinfo import ZoneInfo
 
 OSLO_TZ = ZoneInfo("Europe/Oslo")
 
+WEATHER_SYMBOLS: dict[str, tuple[str, str]] = {
+    "clearsky_day":           ("Klarvær",          "☀️"),
+    "clearsky_night":         ("Klarvær",          "🌙"),
+    "fair_day":               ("Lettskyet",        "🌤️"),
+    "fair_night":             ("Lettskyet",        "🌤️"),
+    "partlycloudy_day":       ("Delvis skyet",     "⛅"),
+    "partlycloudy_night":     ("Delvis skyet",     "⛅"),
+    "cloudy":                 ("Overskyet",        "☁️"),
+    "fog":                    ("Tåke",             "🌫️"),
+    "lightrain":              ("Lett regn",        "🌦️"),
+    "rain":                   ("Regn",             "🌧️"),
+    "heavyrain":              ("Kraftig regn",     "🌧️"),
+    "lightrainshowers_day":   ("Regnbyger",        "🌦️"),
+    "lightrainshowers_night": ("Regnbyger",        "🌦️"),
+    "rainshowers_day":        ("Regnbyger",        "🌦️"),
+    "rainshowers_night":      ("Regnbyger",        "🌦️"),
+    "heavyrainshowers_day":   ("Kraftige byger",   "⛈️"),
+    "heavyrainshowers_night": ("Kraftige byger",   "⛈️"),
+    "lightsnow":              ("Lett snø",         "🌨️"),
+    "snow":                   ("Snø",              "❄️"),
+    "heavysnow":              ("Kraftig snø",      "❄️"),
+    "sleet":                  ("Sludd",            "🌨️"),
+    "thunder":                ("Torden",           "⛈️"),
+    "rainandthunder":         ("Regn og torden",   "⛈️"),
+}
+
+def _weather_label(symbol_code: str) -> tuple[str, str]:
+    if not symbol_code:
+        return ("Ukjent", "🌡️")
+    if symbol_code in WEATHER_SYMBOLS:
+        return WEATHER_SYMBOLS[symbol_code]
+    base = symbol_code.split("_")[0]
+    for key, val in WEATHER_SYMBOLS.items():
+        if key.startswith(base + "_") or key == base:
+            return val
+    return (symbol_code.replace("_", " ").capitalize(), "🌡️")
+
+
 FEEDS = [
     ("NRK Siste",                "https://www.nrk.no/nyheter/siste.rss"),
     ("NRK Vestfold og Telemark", "https://www.nrk.no/vestfoldogtelemark/siste.rss"),
@@ -76,6 +114,104 @@ def fetch_articles(hours: int = 48) -> list[dict]:
 
     print(f"  📡  Hentet {len(articles)} artikler fra {len(FEEDS)} feeder")
     return articles
+
+
+# ---------------------------------------------------------------------------
+# Yr-værhenting
+# ---------------------------------------------------------------------------
+
+YR_URL = "https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=59.2089&lon=9.6093"
+YR_USER_AGENT = "MorgenbriefBot/1.0 (https://github.com/chrbo86/webside)"
+
+
+def fetch_weather() -> dict | None:
+    import requests
+
+    try:
+        resp = requests.get(YR_URL, headers={"User-Agent": YR_USER_AGENT}, timeout=10)
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as exc:
+        print(f"  ⚠️  Værhenting feilet: {exc}")
+        return None
+
+    timeseries = data.get("properties", {}).get("timeseries", [])
+    if not timeseries:
+        return None
+
+    now_oslo = datetime.now(OSLO_TZ)
+    today_date = now_oslo.date()
+
+    by_hour: dict = {}
+    for entry in timeseries:
+        try:
+            utc_dt = datetime.fromisoformat(entry["time"].replace("Z", "+00:00"))
+            by_hour[utc_dt.astimezone(OSLO_TZ)] = entry["data"]
+        except Exception:
+            continue
+
+    today_rows = []
+    for hour in [6, 12, 15, 18]:
+        candidate = now_oslo.replace(hour=hour, minute=0, second=0, microsecond=0)
+        data_pt = by_hour.get(candidate)
+        if data_pt is None:
+            continue
+        instant = data_pt.get("instant", {}).get("details", {})
+        next1 = data_pt.get("next_1_hours", {})
+        next6 = data_pt.get("next_6_hours", {})
+        symbol = (next1.get("summary", {}).get("symbol_code")
+                  or next6.get("summary", {}).get("symbol_code") or "")
+        precip = (next1.get("details", {}).get("precipitation_amount", 0.0)
+                  or next6.get("details", {}).get("precipitation_amount", 0.0))
+        today_rows.append({
+            "time":   candidate.strftime("%H:%M"),
+            "temp":   instant.get("air_temperature"),
+            "wind":   instant.get("wind_speed"),
+            "precip": precip,
+            "symbol": symbol,
+        })
+
+    forecast_rows = []
+    for day_offset in (1, 2, 3):
+        target_date = today_date + timedelta(days=day_offset)
+        day_entries = [(dt, d) for dt, d in by_hour.items() if dt.date() == target_date]
+        if not day_entries:
+            continue
+
+        mins = [e.get("next_6_hours", {}).get("details", {}).get("air_temperature_min")
+                for _, e in day_entries]
+        maxs = [e.get("next_6_hours", {}).get("details", {}).get("air_temperature_max")
+                for _, e in day_entries]
+        mins = [v for v in mins if v is not None]
+        maxs = [v for v in maxs if v is not None]
+
+        precips = [(e.get("next_6_hours", {}).get("details", {}).get("precipitation_amount", 0.0)
+                    or e.get("next_1_hours", {}).get("details", {}).get("precipitation_amount", 0.0))
+                   for _, e in day_entries]
+
+        midday_symbols = [
+            (e.get("next_6_hours", {}).get("summary", {}).get("symbol_code")
+             or e.get("next_1_hours", {}).get("summary", {}).get("symbol_code"))
+            for dt, e in day_entries if 10 <= dt.hour <= 15
+        ]
+        midday_symbols = [s for s in midday_symbols if s]
+        dominant_symbol = midday_symbols[0] if midday_symbols else ""
+
+        label = f"{WEEKDAYS_NO[target_date.weekday()]} {target_date.day}. {MONTHS_NO[target_date.month]}"
+        forecast_rows.append({
+            "date":   target_date.isoformat(),
+            "label":  label,
+            "min":    min(mins) if mins else None,
+            "max":    max(maxs) if maxs else None,
+            "precip": round(sum(precips), 1),
+            "symbol": dominant_symbol,
+        })
+
+    if not today_rows and not forecast_rows:
+        return None
+
+    print(f"  🌤️  Hentet værdata fra Yr ({len(today_rows)} timer, {len(forecast_rows)} dager)")
+    return {"today": today_rows, "forecast": forecast_rows}
 
 
 # ---------------------------------------------------------------------------
@@ -400,6 +536,51 @@ a:hover { text-decoration: underline; }
   .site-header, .content { padding: 18px 20px; }
   .site-footer { padding: 18px 20px; }
 }
+
+/* Weather block */
+.weather-block { margin-bottom: 8px; }
+.weather-today {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px 0;
+  margin-bottom: 12px;
+}
+.weather-hour-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.weather-hour-row:last-child { border-bottom: none; }
+.weather-hour-time { width: 44px; font-weight: 600; color: var(--text); flex-shrink: 0; }
+.weather-hour-icon { font-size: 18px; flex-shrink: 0; }
+.weather-hour-temp { width: 42px; font-weight: 700; font-size: 15px; color: var(--text); flex-shrink: 0; }
+.weather-hour-detail { color: var(--text-muted); font-size: 13px; min-width: 72px; }
+.weather-forecast { display: flex; gap: 10px; flex-wrap: wrap; }
+.weather-forecast-card {
+  flex: 1;
+  min-width: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.weather-fc-label {
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  margin-bottom: 6px; letter-spacing: 0.2px;
+}
+.weather-fc-icon { font-size: 24px; margin-bottom: 6px; }
+.weather-fc-temps { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.weather-fc-precip { font-size: 12px; color: var(--text-muted); }
+
+@media (max-width: 600px) {
+  .weather-hour-row { gap: 8px; padding: 10px 14px; }
+  .weather-forecast-card { min-width: 80px; padding: 12px 8px; }
+}
 """
 
 THEME_SCRIPT = """
@@ -438,7 +619,54 @@ def _nav(current: str = "brief") -> str:
     )
 
 
-def render_brief_html(brief: dict, date_str: str, date_obj: datetime) -> str:
+def render_weather_html(weather: dict | None) -> str:
+    if not weather:
+        return ""
+
+    today_rows_html = ""
+    for row in weather.get("today", []):
+        label_str, emoji = _weather_label(row["symbol"])
+        temp_str   = f"{row['temp']:.0f}°" if row["temp"] is not None else "–"
+        wind_str   = f"{row['wind']:.0f} m/s" if row["wind"] is not None else "–"
+        precip_str = f"{row['precip']:.1f} mm" if row.get("precip") else "–"
+        today_rows_html += f"""
+        <div class="weather-hour-row">
+          <span class="weather-hour-time">{row['time']}</span>
+          <span class="weather-hour-icon" title="{label_str}">{emoji}</span>
+          <span class="weather-hour-temp">{temp_str}</span>
+          <span class="weather-hour-detail">💨 {wind_str}</span>
+          <span class="weather-hour-detail">🌧 {precip_str}</span>
+        </div>"""
+
+    forecast_cards_html = ""
+    for day in weather.get("forecast", []):
+        label_str, emoji = _weather_label(day["symbol"])
+        min_str    = f"{day['min']:.0f}°" if day["min"] is not None else "–"
+        max_str    = f"{day['max']:.0f}°" if day["max"] is not None else "–"
+        precip_str = f"{day['precip']:.1f} mm" if day.get("precip") else "–"
+        forecast_cards_html += f"""
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">{day['label']}</div>
+          <div class="weather-fc-icon" title="{label_str}">{emoji}</div>
+          <div class="weather-fc-temps">{min_str} / {max_str}</div>
+          <div class="weather-fc-precip">🌧 {precip_str}</div>
+        </div>"""
+
+    return f"""
+      <div class="weather-block">
+        <div class="section-title"><span>🌤️</span>Vær i Skien</div>
+        <div class="weather-today">
+          {today_rows_html}
+        </div>
+        <div class="weather-forecast">
+          {forecast_cards_html}
+        </div>
+      </div>
+      <hr class="section-divider">"""
+
+
+def render_brief_html(brief: dict, date_str: str, date_obj: datetime,
+                      weather: dict | None = None) -> str:
     weekdays = ["mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag"]
     weekday = weekdays[date_obj.weekday()]
     human_date = date_obj.strftime(f"{weekday} %-d. %B %Y")
@@ -480,6 +708,8 @@ def render_brief_html(brief: dict, date_str: str, date_obj: datetime) -> str:
         <ul>{wl_items}</ul>
       </div>"""
 
+    weather_html = render_weather_html(weather)
+
     return f"""<!DOCTYPE html>
 <html lang="no">
 <head>
@@ -497,6 +727,7 @@ def render_brief_html(brief: dict, date_str: str, date_obj: datetime) -> str:
   </header>
   <div class="content">
     <div class="date-badge">📅 {human_date}</div>
+    {weather_html}
     {sections_html}
     {watchlist_html}
   </div>
@@ -588,8 +819,11 @@ def main() -> None:
     # 2. Generer brief via Claude
     brief = generate_brief(articles, date_str)
 
+    # 2b. Hent vær
+    weather = fetch_weather()
+
     # 3. Render HTML
-    brief_html = render_brief_html(brief, date_str, now)
+    brief_html = render_brief_html(brief, date_str, now, weather=weather)
 
     # 4. Lagre dagsarkiv
     archive_path.write_text(brief_html, encoding="utf-8")
