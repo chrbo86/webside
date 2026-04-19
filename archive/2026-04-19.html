@@ -4,230 +4,386 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Morgenbrief – søndag 19. April 2026</title>
+
+<script>
+(function(){
+  var t = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<script>
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme');
+  var next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+</script>
+
 <style>
 :root {
-  --navy: #1a2e4a;
-  --blue: #1a5276;
-  --light-blue: #a8c4d8;
-  --bg: #f5f5f0;
-  --card-bg: #ffffff;
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface2: #f0eeea;
   --text: #1a1a1a;
-  --muted: #666;
-  --border: #e8e8e4;
-  --accent: #e8f4f8;
+  --text-muted: #6b7280;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --border: #e5e3de;
+  --header-bg: #0f172a;
+  --header-text: #f1f5f9;
+  --header-muted: #94a3b8;
+  --badge-bg: #1e293b;
+  --footer-bg: #0f172a;
+  --footer-text: #64748b;
+  --watchlist-bg: #eff6ff;
+  --watchlist-border: #2563eb;
+  --toggle-bg: #334155;
+  --toggle-icon: "🌙";
+}
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #273548;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --accent: #60a5fa;
+  --accent-light: #1e3a5f;
+  --border: #334155;
+  --header-bg: #020617;
+  --header-text: #f1f5f9;
+  --header-muted: #64748b;
+  --badge-bg: #334155;
+  --footer-bg: #020617;
+  --footer-text: #475569;
+  --watchlist-bg: #1e3a5f;
+  --watchlist-border: #60a5fa;
+  --toggle-bg: #60a5fa;
+  --toggle-icon: "☀️";
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body {
-  font-family: Georgia, "Times New Roman", serif;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
   background: var(--bg);
   color: var(--text);
   line-height: 1.65;
+  transition: background 0.2s, color 0.2s;
 }
-a { color: var(--blue); }
-.wrapper { max-width: 700px; margin: 0 auto; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrapper { max-width: 720px; margin: 0 auto; }
 
 /* Header */
 .site-header {
-  background: var(--navy);
-  padding: 28px 40px;
+  background: var(--header-bg);
+  padding: 24px 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
 }
-.site-header h1 { color: #fff; font-size: 22px; }
-.site-header p  { color: var(--light-blue); font-size: 13px; font-family: Arial, sans-serif; }
-.site-header nav a {
-  color: var(--light-blue);
-  font-size: 13px;
-  font-family: Arial, sans-serif;
-  text-decoration: none;
-  margin-left: 16px;
-  border-bottom: 1px solid transparent;
+.header-left h1 {
+  color: var(--header-text);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
 }
-.site-header nav a:hover { border-bottom-color: var(--light-blue); }
+.header-left p { color: var(--header-muted); font-size: 13px; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.site-header nav a {
+  color: var(--header-muted);
+  font-size: 13px;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.site-header nav a:hover,
+.site-header nav a.active { color: var(--header-text); border-bottom-color: var(--accent); }
+
+/* Theme toggle */
+.theme-toggle {
+  background: var(--toggle-bg);
+  border: none;
+  border-radius: 20px;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+[data-theme="dark"] .theme-toggle::after { transform: translateX(20px); }
+.theme-toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.theme-toggle-wrap span { font-size: 14px; line-height: 1; }
 
 /* Content */
-.content { padding: 32px 40px; }
+.content { padding: 36px 40px; }
+
+/* Date badge */
+.date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--badge-bg);
+  color: var(--header-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  letter-spacing: 0.3px;
+}
 
 /* Sections */
-.section { margin-bottom: 32px; border-bottom: 1px solid var(--border); padding-bottom: 28px; }
-.section:last-of-type { border-bottom: none; }
+.section { margin-bottom: 36px; }
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin-bottom: 28px;
+}
 .section-title {
-  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  color: var(--blue);
+  letter-spacing: 1.8px;
+  color: var(--text-muted);
   margin-bottom: 16px;
-  font-family: Arial, sans-serif;
 }
-.news-item { margin-bottom: 16px; }
-.news-item strong { display: block; font-size: 16px; margin-bottom: 4px; }
-.news-item p { font-size: 15px; color: #3a3a3a; }
-.news-item .source { font-size: 12px; color: var(--muted); font-family: Arial, sans-serif; margin-top: 3px; }
-.news-item .source a { color: var(--blue); }
+
+/* News items */
+.news-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.15s;
+}
+.news-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+[data-theme="dark"] .news-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.news-item strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+.news-item p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.news-item .source {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.news-item .source::before { content: "↗"; font-size: 10px; }
+.news-item .source a { color: var(--accent); font-weight: 500; }
 
 /* Watchlist */
 .watchlist {
-  background: var(--accent);
-  border-left: 4px solid var(--blue);
+  background: var(--watchlist-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--watchlist-border);
   padding: 20px 24px;
-  border-radius: 0 4px 4px 0;
+  border-radius: 0 10px 10px 0;
+  margin-top: 8px;
 }
 .watchlist h3 {
-  font-size: 12px;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 1px;
-  color: var(--blue);
-  font-family: Arial, sans-serif;
-  margin-bottom: 12px;
+  letter-spacing: 1.8px;
+  color: var(--accent);
+  margin-bottom: 14px;
 }
-.watchlist ul { padding-left: 18px; }
-.watchlist li { font-size: 14px; margin-bottom: 8px; }
-.watchlist li strong { font-size: 14px; }
+.watchlist ul { padding-left: 0; list-style: none; }
+.watchlist li {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 10px;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+.watchlist li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.watchlist li strong { font-weight: 600; }
 
 /* Archive list */
 .archive-list { list-style: none; }
 .archive-list li {
-  border-bottom: 1px solid var(--border);
-  padding: 12px 0;
-  font-family: Arial, sans-serif;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: box-shadow 0.15s;
 }
-.archive-list li a { font-size: 15px; font-weight: 600; }
-.archive-list li span { font-size: 13px; color: var(--muted); margin-left: 8px; }
-
-/* Date badge */
-.date-badge {
-  display: inline-block;
-  background: var(--navy);
-  color: #fff;
-  font-family: Arial, sans-serif;
-  font-size: 12px;
-  padding: 3px 10px;
-  border-radius: 12px;
-  margin-bottom: 20px;
+.archive-list li:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.archive-list li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
 }
+.archive-list li a:hover { color: var(--accent); }
+.archive-list li a span { font-size: 13px; color: var(--text-muted); font-weight: 400; }
 
 /* Footer */
 .site-footer {
-  background: var(--navy);
-  padding: 18px 40px;
+  background: var(--footer-bg);
+  padding: 20px 40px;
   text-align: center;
-  font-family: Arial, sans-serif;
   font-size: 12px;
-  color: #7f8c8d;
+  color: var(--footer-text);
+  margin-top: 12px;
 }
 
 @media (max-width: 600px) {
-  .site-header, .content { padding: 20px; }
+  .site-header, .content { padding: 18px 20px; }
+  .site-footer { padding: 18px 20px; }
 }
 </style>
 </head>
 <body>
 <div class="wrapper">
   <header class="site-header">
-    <div><h1>☕ Morgenbrief</h1><p>Nyheter fra de siste 48 timene</p></div>
-    <nav><a href="/webside/" style="border-bottom-color:var(--light-blue)">Siste brief</a><a href="/webside/archive/">Arkiv</a></nav>
+    <div class="header-left"><h1>☕ Morgenbrief</h1><p>Nyheter fra de siste 48 timene</p></div>
+    <div class="header-right"><nav><a href="/webside/" class="active">Siste brief</a><a href="/webside/archive/">Arkiv</a></nav><div class="theme-toggle-wrap"><span>☀️</span><button class="theme-toggle" onclick="toggleTheme()" aria-label="Bytt tema"></button><span>🌙</span></div></div>
   </header>
   <div class="content">
     <div class="date-badge">📅 søndag 19. April 2026</div>
     
+      
       <div class="section">
-        <div class="section-title">🏦 Bank, finans og næringsliv</div>
+        <div class="section-title"><span>🏦</span>Bank, finans og næringsliv</div>
         
         <div class="news-item">
-          <strong>Streik i hotell- og restaurantnæringen</strong>
-          <p>Fellesforbundet brøt forhandlinger med NHO Reiseliv. 1627 medlemmer tas ut i streik fra søndag, med opptrapping torsdag. Arbeidere krever reell lønnsøkning.</p>
+          <strong>Streik i hotell- og restaurantnæringen etter brudd i meklingen</strong>
+          <p>Fellesforbundet tok ut 1627 medlemmer i streik søndag etter brudd med NHO Reiseliv. Nye uttak planlegges torsdag hvis det ikke oppnås enighet om lønnsøkninger.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/brudd-i-meklingen_--streik-i-hotell--og-restaurantnaeringen-1.17852379" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
-          <strong>Equinor øker produksjon på Mongstad</strong>
-          <p>Etter drivstoffkrise har Equinor oppjustert produksjon av flybensin og diesel på Norges eneste gjenværende raffineri.</p>
+          <strong>Equinor øker produksjon på Mongstad etter drivstoffkrisen</strong>
+          <p>Oljeraffineriet på Mongstad har oppjustert produksjonen av flybensin og diesel. Norge har nå kun ett raffineri igjen.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/equinor-oker-produksjonen-pa-mongstad-etter-drivstoffkrisen/571000" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
         <div class="news-item">
-          <strong>El-lastebiler blir konkurransedyktige</strong>
-          <p>Elektriske lastebiler har blitt prismessig konkurransedyktige mot dieselbiler, med økt rekkevidde og flere ladestasjoner tilgjengelig.</p>
+          <strong>Elektriske lastebiler blir konkurransedyktige mot diesel</strong>
+          <p>El-lastebiler har blitt prismessig konkurransedyktige sammenlignet med dieselbiler, drevet av økt rekkevidde og flere ladestasjoner.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/el-lastebiler-kan-utfordre-diesel-okt-rekkevidde-og-flere-ladestasjoner/571003" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
       </div>
+      <hr class="section-divider">
       <div class="section">
-        <div class="section-title">🤖 Kunstig intelligens og teknologi</div>
+        <div class="section-title"><span>🤖</span>Kunstig intelligens og teknologi</div>
         
         <div class="news-item">
-          <strong>NTNU tester nye rekkverk på gamle broer</strong>
-          <p>Forskere krasjtester nye rekkverk for å sikre at over 4000 eldre norske broer kan oppgraderes trygt og effektivt.</p>
+          <strong>NTNU-forskere krasjtester nye rekkverk på gamle broer</strong>
+          <p>Mer enn 4000 eldre broer i Norge må sikres. Forskere tester nye rekkverk for å påvise om de er trygge å montere direkte på gamle broer.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/her-krasjer-de-nye-rekkverk-for-a-teste-hvor-mye-gamle-broer-taler/567405" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
         <div class="news-item">
-          <strong>Sjødroner vekker interesse fra US Navy</strong>
-          <p>Norsk selskap demonstrerte autonome sjødroner for amerikanske militæret. Teknologien er allerede i bruk i Ukraina.</p>
-          <span class="source">Kilde: <a href="https://www.tu.no/artikler/demonstrerte-autonome-sjodroner-for-us-navy-usa-er-virkelig-fremme-i-skoene/570753" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
-        </div>
-        <div class="news-item">
-          <strong>Elektriske skip kan lade i åpen sjø</strong>
-          <p>Ny magnetisk ladeplugg-løsning gjør det enklere å lade elektriske skip til havs, som å sette en kopp i en koppholder.</p>
+          <strong>Elektriske skip kan lade i åpen sjø med ny magnetisk løsning</strong>
+          <p>En ny "plug and play"-løsning med magnetisk ladeplugg forenkler lading av elektriske skip til havs betydelig.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/med-en-ny-plug-and-play-losning-kan-elektriske-skip-lade-i-apen-sjo/570798" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
       </div>
+      <hr class="section-divider">
       <div class="section">
-        <div class="section-title">🏔️ Telemark og Skien</div>
+        <div class="section-title"><span>🏔️</span>Telemark og Skien</div>
         
         <div class="news-item">
-          <strong>Sandefjord streikes ved opptrapping torsdag</strong>
-          <p>Flere bedrifter i Sandefjord rammes når streiken i hotell- og restaurantnæringen trappes opp. Scandic Park, Hotelldrift og andre tas ut.</p>
+          <strong>Sandefjord får streiktreff torsdag ved opptrapping</strong>
+          <p>Flere hoteller og bedrifter i Sandefjord blir rammet når Fellesforbundet trapper opp streiken torsdag morgen hvis enighet ikke oppnås.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/sandefjord-blir-rammet-ved-opptrapping-av-streik-1.17852458" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
         <div class="news-item">
-          <strong>Store skader på bil i Midt-Telemark</strong>
-          <p>Politiet rykket ut til forlatt bil i grøfta med store materielle skader og utløste airbag. Søk etter fører pågår.</p>
-          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/store-skader-pa-bil-i-midt-telemark-1.17852558" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
-        </div>
-        <div class="news-item">
-          <strong>Poengdeling mellom Sandefjord og Rosenborg</strong>
-          <p>Eliteseriekamp endte 0–0 tross store sjanser til begge lag. Sandefjord har syv poeng etter fem kamper.</p>
+          <strong>Sandefjord og Rosenborg endte målløst</strong>
+          <p>Eliteserien-kamp mellom Sandefjord og Rosenborg endte 0-0. Sandefjord hadde flere store sjanser, blant annet skudd i tverrliggeren.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/poengdeling-i-sandefjord-1.17852132" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
+        <div class="news-item">
+          <strong>Mariakapellet stengt på ubestemt tid</strong>
+          <p>Kapellet i kirkeruinen i Bamble er stengt etter funn av helseskadelig svertesopp og mistanke om hussopp. Fylkeskommunen fikk 500.000 kroner for restaurering.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/stengte-mariakapellet-1.17851894" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+        </div>
       </div>
+      <hr class="section-divider">
       <div class="section">
-        <div class="section-title">🏛️ Norsk politikk og samfunn</div>
+        <div class="section-title"><span>🏛️</span>Norsk politikk og samfunn</div>
         
         <div class="news-item">
-          <strong>Mann pågrepet, knyttet til minst seks overfall</strong>
-          <p>25-åring siktet for fire grove kroppskrenkelser i Asker, Bærum og Spikkestad. Politiet etterforsker også forsøk på overfallsvoldtekt i Oslo.</p>
+          <strong>Mann siktet for minst seks overfall i Stor-Oslo</strong>
+          <p>Politiet har siktet 20-åring for fire grove kroppskrenkelser og etterforsker ham for minst to andre overfall i Asker, Bærum og Oslo.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/stor-oslo/knyttes-til-minst-seks-overfall-1.17852496" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
-          <strong>Alvorlig trafikkulykke i Asker – én omkom</strong>
-          <p>Personbil kjørte av veien tidlig søndag. Mann i 30-årene døde, annen person fraktet til sykehus med helikopter.</p>
+          <strong>Skigåer skadet etter stort fall i Troms</strong>
+          <p>Skigåer falt flere hundre meter nedover fjellside i Troms. Redningshelikopter og luftambulanse fra Tromsø rykket ut til stedet.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/politiet_-skigaer-skadet-etter-fall-i-troms-1.17852398" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>En omkom i trafikkulykke i Asker</strong>
+          <p>Mann i 30-årene døde etter at personbil kjørte av veien. En annen person ble fraktet til sykehus med luftambulanse.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/alvorlig-trafikkulykke-i-asker-_-en-omkom-1.17852383" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
-          <strong>Snarrådig bilist hindret fyllekjører på E6</strong>
-          <p>Fører blåste langt over lovlig alkoholverdi og slo ut på narkotika. Bilist sperret kjøretøyet med sin egen bil til politiet kom.</p>
-          <span class="source">Kilde: <a href="https://www.nrk.no/stor-oslo/snarradig-bilist-hindret-fyllekjorer-pa-e6-1.17852469" target="_blank" rel="noopener">NRK Siste</a></span>
-        </div>
-        <div class="news-item">
-          <strong>Brennende bil i tunnel på E39</strong>
-          <p>Person tok seg ut av brennende personbil i Svindlandstunnelen i Kvinesdal. Politiet arbeider med å avklare skadeomfang.</p>
+          <strong>Person tok seg ut av brennende bil i tunnel</strong>
+          <p>Bil begynte å brenne i Svindlandstunnelen på E39 i Kvinesdal. Person kom seg ut før brannvesenet ankom.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/sorlandet/person-tok-seg-ut-av-brennende-bil-1.17852497" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
+        <div class="news-item">
+          <strong>Nesjar-cup avlyses på jubileumåret</strong>
+          <p>Fotballturnering avlyses etter for få påmeldinger. Cupen skulle markert 50-årsjubileum, men deltakelsen har falt fra 158 lag i 2016 til 83 i fjor.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/ingen-nesjar-cup-i-ar-1.17852167" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+        </div>
       </div>
+      <hr class="section-divider">
       <div class="section">
-        <div class="section-title">⚡ Energi og strøm</div>
+        <div class="section-title"><span>⚡</span>Energi og strøm</div>
         
         <div class="news-item">
           <strong>Vindturbiner lekker mikroplast i naturen</strong>
-          <p>Dansk studie viser at regn skreller i stykker plastbelegget på vindmøller etter få måneder. Bitene havner i naturen.</p>
+          <p>Regn skreller plastbelegg fra vindmøller etter bare måneder. Fornybar Norge avviser problemet som alvorlig.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/vindturbiner-lekker-mikroplast-i-naturen-forsker-ber-norge-ta-grep/571015" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Bøndene bekymret for drivstoffmangel</strong>
+          <p>Bondelaget advarer om kritisk mangel på drivstoff under vårsåingen. Ber næringsminister prioritere landbruk ved eventuell rasjonering.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/bondene-er-bekymret-for-drivstoffmangel-1.17851906" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
       </div>
     
       <div class="watchlist">
         <h3>💡 Verdt å følge med på</h3>
-        <ul><li><strong>Streik i hotell- og restaurantnæringen eskaleres</strong> – Streiken trappes opp torsdag med over 1000 nye medlemmer; potensiell innvirkning på reiselivssektoren og andre næringer.</li><li><strong>Hormuzstredet-situasjonen er uavklart</strong> – Iran har stengt stredet igjen, men situasjonen er fortsatt uavklart for kommersiell shipping; kan påvirke globale energipriser.</li><li><strong>Peru presidentvalg resultater forsinket</strong> – Opptellingen av over 15.000 omstridte stemmesedler vil vare til midten av mai; usikkerhet om valgresultatet vedvarer.</li></ul>
+        <ul><li><strong>Streik i hotell- og restaurantnæringen eskalerer</strong> – Fellesforbundet trappes opp streiken torsdag med over 1000 nye medlemmer hvis ingen enighet oppnås.</li><li><strong>Mann siktet for seriemessige overfall i Oslo-området</strong> – Etterforskningen pågår for minst seks overfall, og resultat fra påtaleavhør kan komme mandag.</li><li><strong>Hormuzstredet og energikrise påvirker global handel</strong> – Iran hevder stredet er stengt igjen, noe som påvirker olje- og gassmarkedet globalt.</li></ul>
       </div>
   </div>
   <footer class="site-footer">
