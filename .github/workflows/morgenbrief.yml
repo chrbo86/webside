@@ -1,0 +1,43 @@
+name: Morgenbrief
+
+on:
+  schedule:
+    # Kl. 06:00 Oslo-tid (CET = UTC+1, CEST = UTC+2)
+    # Kjører 05:00 UTC – dekker begge tidssoner
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+    # Kan kjøres manuelt fra GitHub Actions-fanen
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Generate morgenbrief
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python scripts/generate.py
+
+      - name: Commit and push changes
+        run: |
+          git config user.name "Morgenbrief Bot"
+          git config user.email "bot@morgenbrief"
+          git add -A
+          git diff --cached --quiet || git commit -m "📰 Morgenbrief $(date +'%Y-%m-%d')"
+          git push
