@@ -269,6 +269,51 @@ a:hover { text-decoration: underline; }
   .site-header, .content { padding: 18px 20px; }
   .site-footer { padding: 18px 20px; }
 }
+
+/* Weather block */
+.weather-block { margin-bottom: 8px; }
+.weather-today {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px 0;
+  margin-bottom: 12px;
+}
+.weather-hour-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.weather-hour-row:last-child { border-bottom: none; }
+.weather-hour-time { width: 44px; font-weight: 600; color: var(--text); flex-shrink: 0; }
+.weather-hour-icon { font-size: 18px; flex-shrink: 0; }
+.weather-hour-temp { width: 42px; font-weight: 700; font-size: 15px; color: var(--text); flex-shrink: 0; }
+.weather-hour-detail { color: var(--text-muted); font-size: 13px; min-width: 72px; }
+.weather-forecast { display: flex; gap: 10px; flex-wrap: wrap; }
+.weather-forecast-card {
+  flex: 1;
+  min-width: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.weather-fc-label {
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  margin-bottom: 6px; letter-spacing: 0.2px;
+}
+.weather-fc-icon { font-size: 24px; margin-bottom: 6px; }
+.weather-fc-temps { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.weather-fc-precip { font-size: 12px; color: var(--text-muted); }
+
+@media (max-width: 600px) {
+  .weather-hour-row { gap: 8px; padding: 10px 14px; }
+  .weather-forecast-card { min-width: 80px; padding: 12px 8px; }
+}
 </style>
 </head>
 <body>
@@ -280,19 +325,67 @@ a:hover { text-decoration: underline; }
   <div class="content">
     <div class="date-badge">📅 søndag 19. April 2026</div>
     
+      <div class="weather-block">
+        <div class="section-title"><span>🌤️</span>Vær i Skien</div>
+        <div class="weather-today">
+          
+        <div class="weather-hour-row">
+          <span class="weather-hour-time">15:00</span>
+          <span class="weather-hour-icon" title="Overskyet">☁️</span>
+          <span class="weather-hour-temp">10°</span>
+          <span class="weather-hour-detail">💨 3 m/s</span>
+          <span class="weather-hour-detail">🌧 1.9 mm</span>
+        </div>
+        <div class="weather-hour-row">
+          <span class="weather-hour-time">18:00</span>
+          <span class="weather-hour-icon" title="Regn">🌧️</span>
+          <span class="weather-hour-temp">9°</span>
+          <span class="weather-hour-detail">💨 4 m/s</span>
+          <span class="weather-hour-detail">🌧 0.3 mm</span>
+        </div>
+        </div>
+        <div class="weather-forecast">
+          
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">mandag 20. april</div>
+          <div class="weather-fc-icon" title="Lettskyet">🌤️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 1.1 mm</div>
+        </div>
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">tirsdag 21. april</div>
+          <div class="weather-fc-icon" title="Klarvær">☀️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 –</div>
+        </div>
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">onsdag 22. april</div>
+          <div class="weather-fc-icon" title="Lettskyet">🌤️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 –</div>
+        </div>
+        </div>
+      </div>
+      <hr class="section-divider">
+    
       
       <div class="section">
         <div class="section-title"><span>🏦</span>Bank, finans og næringsliv</div>
         
         <div class="news-item">
           <strong>Streik i hotell- og restaurantnæringen</strong>
-          <p>Fellesforbundet og NHO Reiseliv brøt mekling. Fra søndag tas 1627 medlemmer ut i streik. Opptrapping varsles til torsdag med over 1000 nye medlemmer.</p>
+          <p>Fellesforbundet brøt meklingen med NHO Reiseliv. Fra søndag tas 1627 medlemmer ut i streik. Torsdag trappes streiken opp med over 1000 nye ansatte.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/brudd-i-meklingen_--streik-i-hotell--og-restaurantnaeringen-1.17852379" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
           <strong>Equinor øker produksjon på Mongstad</strong>
-          <p>Etter drivstoffkrise oppjusterer Equinor produksjonen av flybensin og diesel ved Norges eneste igjenværende raffineri.</p>
+          <p>Oljeselskapet oppjusterer flybensin- og dieselproduksjon etter drivstoffkrisen. Mongstad er Norges eneste gjenværende raffineri.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/equinor-oker-produksjonen-pa-mongstad-etter-drivstoffkrisen/571000" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Bønder bekymret for drivstoffmangel</strong>
+          <p>Bondelaget i Vestfold frykter kritisk mangel på drivstoff under vårsåing. Lederen oppfordrer næringsministeren til å prioritere landbrukssektoren.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/bondene-er-bekymret-for-drivstoffmangel-1.17851906" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
       </div>
       <hr class="section-divider">
@@ -300,14 +393,19 @@ a:hover { text-decoration: underline; }
         <div class="section-title"><span>🤖</span>Kunstig intelligens og teknologi</div>
         
         <div class="news-item">
-          <strong>NTNU tester nye rekkverk for eldre broer</strong>
-          <p>Forskere krasjtester nye rekkverk for å sikre over 4000 eldre broer i Norge. Må verifisere om løsninger kan monteres direkte på gamle konstruksjoner.</p>
+          <strong>Krasjtester nye rekkverk for gamle broer</strong>
+          <p>NTNU-forskere tester nye rekkverk for sikring av over 4000 eldre norske broer. Målet er å undersøke om komponenter kan monteres direkte på gamle konstruksjoner.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/her-krasjer-de-nye-rekkverk-for-a-teste-hvor-mye-gamle-broer-taler/567405" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
         <div class="news-item">
           <strong>Vindturbiner lekker mikroplast</strong>
-          <p>Dansk studie viser regn skreller plastbelegg fra vindmøller etter få måneder. Bitene havner i naturen. Fornybar Norge avviser problemet.</p>
+          <p>Dansk studie viser at regn skreller plastbelegg fra vindmøller på få måneder. Partiklene havner i naturen, men Fornybar Norge avviser problemet.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/vindturbiner-lekker-mikroplast-i-naturen-forsker-ber-norge-ta-grep/571015" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>El-lastebiler blir konkurransedyktige mot diesel</strong>
+          <p>Elektriske lastebiler har nå bedre rekkevidde og lavere priser. Flere ladestasjoner gjør dem til realistisk alternativ til dieselbiler.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/artikler/el-lastebiler-kan-utfordre-diesel-okt-rekkevidde-og-flere-ladestasjoner/571003" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
       </div>
       <hr class="section-divider">
@@ -315,19 +413,24 @@ a:hover { text-decoration: underline; }
         <div class="section-title"><span>🏔️</span>Telemark og Skien</div>
         
         <div class="news-item">
-          <strong>Sandefjord - Rosenborg endte målløst</strong>
-          <p>Eliteserienkamp i fotball endte 0-0. Sandefjord hadde flere sjanser, inkludert skudd i tverrliggeren.</p>
+          <strong>Streik rammer Sandefjord-hoteller</strong>
+          <p>Hotell- og restaurantstreiken opptrapper torsdag. Fire bedrifter i Sandefjord påvirkes, inkludert Scandic Park og Torp Hotel.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/sandefjord-blir-rammet-ved-opptrapping-av-streik-1.17852458" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Sandefjord og Rosenborg deler poeng</strong>
+          <p>Kampen i Eliteserien endte 0-0 tross flere store sjanser. Sandefjord hadde blant annet ball i tverrliggeren.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/poengdeling-i-sandefjord-1.17852132" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
         <div class="news-item">
-          <strong>Nesjar-cup avlyses</strong>
-          <p>Tradisjonsturnering avlyses fordi for få lag meldte seg på. Skulle ha feiret 50-årsjubileum, men påmelding falt fra 158 lag for ti år siden til 83 i fjor.</p>
-          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/ingen-nesjar-cup-i-ar-1.17852167" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+          <strong>Mariakapellet stengt på ubestemt tid</strong>
+          <p>Kirkeruinen i Bamble lukkes på grunn av svart- og hussopp. Fuktskader fra plastmaling krever omfattende restaurering.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/stengte-mariakapellet-1.17851894" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
         <div class="news-item">
-          <strong>Mariakapellet stengt på ubestemt tid</strong>
-          <p>Kirkeruinen i Bamble lukkes etter funn av helseskadelig svertesopp og hussopp. Fylkeskommunen mottar 500.000 kroner fra Riksantikvaren for restaurering.</p>
-          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/stengte-mariakapellet-1.17851894" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+          <strong>Steinar Wangen tiltalt for drap i Sverige</strong>
+          <p>Tønsberg-mannen er anklaget for drap på kvinne i Trollhättan i 2024. Han nekter straffskyld. Wangen er dømt for tidligere drap i Sverige.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/tiltalt-for-drap-i-sverige-1.17851901" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
       </div>
       <hr class="section-divider">
@@ -335,19 +438,49 @@ a:hover { text-decoration: underline; }
         <div class="section-title"><span>🏛️</span>Norsk politikk og samfunn</div>
         
         <div class="news-item">
-          <strong>Mann pågrepet for flere overfallssaker</strong>
-          <p>Mann i 20-årene siktet for minst seks overfallssaker i Asker, Bærum og Oslo. Påtalt for grove kroppskrenkelser og forsøk på overfallsvoldtekt.</p>
-          <span class="source">Kilde: <a href="https://www.nrk.no/stor-oslo/knyttes-til-minst-seks-overfallssaker-1.17852496" target="_blank" rel="noopener">NRK Siste</a></span>
+          <strong>Mulig drapssak etterforskes i Oslo</strong>
+          <p>Politiet etterforsker mulig drap etter at person ble funnet død på privat adresse. En person er pågrepet. Detaljer holdes tilbake.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/stor-oslo/mulig-drapssak-i-oslo-1.17852630" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
-          <strong>Dødsulykkke i Asker</strong>
-          <p>Mann i 30-årene omkom etter at personbil kjørte av veien. En annen person fraktet til sykehus med luftambulanse.</p>
+          <strong>Mann med luftpistol pågrepet i Trondheim</strong>
+          <p>Observant person meldte mann med pistol. Bevæpnet politi kontrollerte vedkommende. Våpenet viste seg å være luftpistol. Ingen truet.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/trondelag/pagrep-mann-med-pistol-i-trondheim-1.17852434" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Skigåer falt flere hundre meter i Troms</strong>
+          <p>Skiløper falt i bratt terreng og falt flere hundre meter nedover fjellsida. Redningshelikopter og luftambulanse sendt til stedet.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/politiet_-skigaer-skadet-etter-fall-i-troms-1.17852398" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Trafikkdød i Asker</strong>
+          <p>Mann i 30-årene omkom i alvorlig trafikkulykke. Personbil kjørte av veien. En annen person er skadet og behandlet på sykehus.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/alvorlig-trafikkulykke-i-asker-_-en-omkom-1.17852383" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
+          <strong>Brennende bil i tunnel evakuert</strong>
+          <p>Person tok seg ut av brennende bil i Svindlandstunnelen på E39. Politiet etterforsker om flere er skadet eller om evakuering nødvendig.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/sorlandet/person-tok-seg-ut-av-brennende-bil-1.17852497" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Fyllekjører stoppet av snarrådig bilist</strong>
+          <p>Observant sjåfør sperret fyllekjører med punktert hjul på E6. Fører blåste langt over lovlig verdi og var påvirket av narkotika.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/stor-oslo/snarradig-bilist-hindret-fyllekjorer-pa-e6-1.17852469" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
           <strong>Bil eksploderte i Malmö</strong>
-          <p>Kraftig bileksplosjon i bydelen Hindby skadet nærliggende bygård. Ingen personskader rapportert. Politiet etterforsker.</p>
+          <p>Kraftig eksplosjon i Hindby-bydelen tidlig søndag. Eksplosjon skapte hull i bygårdsvegg. Politiet etterforsker. Ingen personskader rapportert.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/bil-eksploderte-i-malmo-1.17852377" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Kvinne truet med kniv i Ålesund</strong>
+          <p>Kvinne i 50-årene ble pågrepet etter å ha stått i veibanen med kniv. Politiet brukte pepperspray for å få kontroll.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/kvinne-pagrepet-etter-a-ha-truet-med-kniv-i-veibanen-i-alesund-1.17852375" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Rottegift funnet i babymat</strong>
+          <p>Østerriker babymatprodusent tilbakekaller produkter etter funn av giftsprøyte. Selskapet Hipp advarer om mulig dødelig forurensning. Politi etterforsker.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/fant-rottegift-i-babymat-1.17852372" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
       </div>
       <hr class="section-divider">
@@ -355,20 +488,15 @@ a:hover { text-decoration: underline; }
         <div class="section-title"><span>⚡</span>Energi og strøm</div>
         
         <div class="news-item">
-          <strong>Iran stanset to tankskip i Hormuzstredet</strong>
-          <p>Iranske styrker stanset søndag to tankskip etter å ha gitt advarsler. USA opprettholder blokade av iranske havner i Persiabukta.</p>
+          <strong>Iran stanser tankskip i Hormuzstredet igjen</strong>
+          <p>Iranske styrker stanset søndag to tankskip i Hormuzstredet etter tidligere advarsler. Iran henviser til USAs fortsatte blokade av iranske havner.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/iransk-nyhetsbyra_-to-tankskip-stanset-i-hormuzstredet-1.17852608" target="_blank" rel="noopener">NRK Siste</a></span>
-        </div>
-        <div class="news-item">
-          <strong>El-lastebiler blir konkurransedyktige mot diesel</strong>
-          <p>Elektriske lastebiler har gått fra dyrere til priskonkurranse med dieselbiler. Økt rekkevidde og flere ladestasjoner driver utvikling.</p>
-          <span class="source">Kilde: <a href="https://www.tu.no/artikler/el-lastebiler-kan-utfordre-diesel-okt-rekkevidde-og-flere-ladestasjoner/571003" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
       </div>
     
       <div class="watchlist">
         <h3>💡 Verdt å følge med på</h3>
-        <ul><li><strong>Iran og USA-konflikt i Hormuzstredet</strong> – Gjentagende stenging av kritisk handelsrute kan påvirke global oljepriser og europeisk energisituasjon.</li><li><strong>Streik i hotell- og restaurantnæringen</strong> – Planert opptrapping torsdag kan påvirke flere bedrifter nasjonalt og eskalere arbeidskonflikten.</li><li><strong>Serieskadevolder pågrepet</strong> – Etterforskning av seks overfallssaker kan avdekke flere forbrytelser og informasjon om gjerningsmennens modus operandi.</li></ul>
+        <ul><li><strong>Streik i hotell- og restaurantnæringen eskaleres</strong> – Streiken trappes opp torsdag med over 1000 nye arbeidere involvert, noe som kan ramme flere destinasjoner og næringsliv.</li><li><strong>Mulig drapssak i Oslo</strong> – Etterforskningen er i gang og kan få nye opplysninger som endrer situasjonen eller omfanget.</li><li><strong>Hormuzstredet-situasjonen påvirker global energimarked</strong> – Irans strategi med å stanke tankskip kan påvirke oljepriser og drivstofftilgangen som bekymrer norske bønder og næringsliv.</li><li><strong>Peru-valg resultater utsatt til mai</strong> – Manuelle opptellingsprosesser av omstridte stemmesedler kan gi uventede resultater når de blir klare.</li></ul>
       </div>
   </div>
   <footer class="site-footer">
