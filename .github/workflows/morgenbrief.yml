@@ -2,9 +2,8 @@ name: Morgenbrief
 
 on:
   schedule:
-    # Kl. 06:00 Oslo-tid (CET = UTC+1, CEST = UTC+2)
-    # Kjører 05:00 UTC – dekker begge tidssoner
-    - cron: "0 5 * * *"
+    # Kl. 06:00 norsk sommertid (CEST = UTC+2)
+    - cron: "0 4 * * *"
   workflow_dispatch:
     # Kan kjøres manuelt fra GitHub Actions-fanen
 
