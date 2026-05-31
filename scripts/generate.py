@@ -68,9 +68,20 @@ FEEDS = [
     ("Teknisk Ukeblad",          "https://www.tu.no/rss"),
 ]
 
+AI_FEEDS = [
+    ("TechCrunch AI",        "https://techcrunch.com/category/artificial-intelligence/feed/"),
+    ("The Verge",            "https://www.theverge.com/rss/index.xml"),
+    ("Ars Technica",         "https://feeds.arstechnica.com/arstechnica/technology-lab"),
+    ("VentureBeat AI",       "https://venturebeat.com/ai/feed/"),
+    ("MIT Technology Review","https://www.technologyreview.com/feed/"),
+    ("Wired",                "https://www.wired.com/feed/rss"),
+]
+
 ROOT = Path(__file__).parent.parent   # repo-root
 ARCHIVE_DIR = ROOT / "archive"
 ARCHIVE_DIR.mkdir(exist_ok=True)
+AI_DIR = ROOT / "ai-nyheter"
+AI_DIR.mkdir(exist_ok=True)
 
 # ---------------------------------------------------------------------------
 # RSS-henting
@@ -114,6 +125,228 @@ def fetch_articles(hours: int = 48) -> list[dict]:
 
     print(f"  📡  Hentet {len(articles)} artikler fra {len(FEEDS)} feeder")
     return articles
+
+
+# ---------------------------------------------------------------------------
+# AI-nyheter – henting og generering
+# ---------------------------------------------------------------------------
+
+def fetch_ai_articles(hours: int = 48) -> list[dict]:
+    cutoff = datetime.now(timezone.utc) - timedelta(hours=hours)
+    articles = []
+
+    for source, url in AI_FEEDS:
+        try:
+            feed = feedparser.parse(url, request_headers={"User-Agent": "MorgenbriefBot/1.0"})
+            for entry in feed.entries[:30]:
+                pub = None
+                for attr in ("published_parsed", "updated_parsed"):
+                    val = getattr(entry, attr, None)
+                    if val:
+                        pub = datetime(*val[:6], tzinfo=timezone.utc)
+                        break
+
+                if not pub or pub < cutoff:
+                    continue
+
+                title   = entry.get("title", "").strip()
+                summary = entry.get("summary", entry.get("description", "")).strip()
+                summary = re.sub(r"<[^>]+>", " ", summary)
+                summary = re.sub(r"\s+", " ", summary)[:600]
+                link    = entry.get("link", "")
+
+                if title:
+                    articles.append({
+                        "source":    source,
+                        "title":     title,
+                        "summary":   summary,
+                        "link":      link,
+                        "published": pub.isoformat(),
+                    })
+        except Exception as exc:
+            print(f"  ⚠️  Feil ved henting av AI-feed {url}: {exc}")
+
+    print(f"  📡  Hentet {len(articles)} AI-artikler fra {len(AI_FEEDS)} feeder")
+    return articles
+
+
+AI_SYSTEM_PROMPT = """Du er en teknologiredaktør som spesialiserer seg på kunstig intelligens og tech-nyheter.
+Skriv alltid på norsk bokmål. Vær faktabasert og konsis – maks 50 ord per punkt.
+Returner KUN gyldig JSON, ingen annen tekst."""
+
+AI_USER_TEMPLATE = """Dato: {date_str}
+
+Disse artiklene er hentet fra internasjonale tech-nyhetskilder de siste 48 timene:
+
+{articles_json}
+
+Kategoriser og prioriter de viktigste AI- og tech-nyhetene i disse seksjonene.
+Hopp over seksjoner uten relevante nyheter. Fokuser på det som faktisk handler om KI/AI.
+Seksjoner:
+  1. "🧠 Store språkmodeller og AI-forskning" (LLM-er, nye modeller, forskning, benchmarks)
+  2. "🏢 AI i næringslivet" (bedrifter, produkter, investeringer, partnerskap)
+  3. "🔧 Utviklerverktøy og plattformer" (API-er, frameworks, open source, infrastruktur)
+  4. "⚖️ AI-politikk og regulering" (lovgivning, etikk, sikkerhet, debatt)
+  5. "💡 Annen tech-nyhet" (andre viktige tech-nyheter som ikke er AI-spesifikke)
+
+Returner dette JSON-formatet – ingen markdown, ingen forklaring, bare JSON:
+{{
+  "sections": [
+    {{
+      "emoji": "🧠",
+      "title": "Store språkmodeller og AI-forskning",
+      "items": [
+        {{
+          "headline": "Kort, beskrivende overskrift på norsk",
+          "body": "1-2 setninger på norsk, maks 50 ord.",
+          "source_name": "Kildenavn",
+          "source_url": "https://..."
+        }}
+      ]
+    }}
+  ],
+  "highlight": {{
+    "headline": "Ukens viktigste AI-nyhet",
+    "body": "2-3 setninger som forklarer hvorfor dette er spesielt viktig.",
+    "source_name": "Kildenavn",
+    "source_url": "https://..."
+  }}
+}}"""
+
+
+def generate_ai_brief(articles: list[dict], date_str: str) -> dict:
+    client = anthropic.Anthropic(api_key=os.environ["ANTHROPIC_API_KEY"])
+
+    articles_json = json.dumps(articles, ensure_ascii=False, indent=2)
+    user_msg = AI_USER_TEMPLATE.format(date_str=date_str, articles_json=articles_json)
+
+    print("  🤖  Kaller Claude for å lage AI-nyhetsbrief …")
+    response = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=4096,
+        system=AI_SYSTEM_PROMPT,
+        messages=[{"role": "user", "content": user_msg}],
+    )
+
+    text = response.content[0].text.strip()
+    text = re.sub(r"^```(?:json)?\s*", "", text)
+    text = re.sub(r"\s*```$", "", text)
+
+    return json.loads(text)
+
+
+def render_ai_brief_html(brief: dict, date_str: str, date_obj: datetime) -> str:
+    weekdays = ["mandag","tirsdag","onsdag","torsdag","fredag","lørdag","søndag"]
+    weekday = weekdays[date_obj.weekday()]
+    human_date = date_obj.strftime(f"{weekday} %-d. %B %Y")
+
+    highlight_html = ""
+    hl = brief.get("highlight")
+    if hl:
+        src = ""
+        if hl.get("source_url"):
+            src = f'<span class="source">Kilde: <a href="{hl["source_url"]}" target="_blank" rel="noopener">{hl.get("source_name","")}</a></span>'
+        elif hl.get("source_name"):
+            src = f'<span class="source">Kilde: {hl["source_name"]}</span>'
+        highlight_html = f"""
+      <div class="ai-highlight">
+        <div class="ai-highlight-label">⭐ Dagens viktigste AI-nyhet</div>
+        <strong>{hl["headline"]}</strong>
+        <p>{hl["body"]}</p>
+        {src}
+      </div>
+      <hr class="section-divider">"""
+
+    sections_html = ""
+    for sec in brief.get("sections", []):
+        items_html = ""
+        for item in sec.get("items", []):
+            src = ""
+            if item.get("source_url"):
+                src = f'<span class="source">Kilde: <a href="{item["source_url"]}" target="_blank" rel="noopener">{item.get("source_name","")}</a></span>'
+            elif item.get("source_name"):
+                src = f'<span class="source">Kilde: {item["source_name"]}</span>'
+            items_html += f"""
+        <div class="news-item">
+          <strong>{item["headline"]}</strong>
+          <p>{item["body"]}</p>
+          {src}
+        </div>"""
+
+        divider = '<hr class="section-divider">' if sections_html else ""
+        sections_html += f"""
+      {divider}
+      <div class="section">
+        <div class="section-title"><span>{sec["emoji"]}</span>{sec["title"]}</div>
+        {items_html}
+      </div>"""
+
+    ai_css_extra = """
+/* AI highlight */
+.ai-highlight {
+  background: linear-gradient(135deg, #1e3a5f 0%, #0f2744 100%);
+  border: 1px solid #2563eb;
+  border-radius: 12px;
+  padding: 20px 24px;
+  margin-bottom: 28px;
+}
+[data-theme="light"] .ai-highlight {
+  background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+  border-color: #2563eb;
+}
+.ai-highlight-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: #60a5fa;
+  margin-bottom: 10px;
+}
+[data-theme="light"] .ai-highlight-label { color: #2563eb; }
+.ai-highlight strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 700;
+  color: #f1f5f9;
+  margin-bottom: 8px;
+  line-height: 1.4;
+}
+[data-theme="light"] .ai-highlight strong { color: #0f172a; }
+.ai-highlight p {
+  font-size: 14px;
+  color: #94a3b8;
+  line-height: 1.65;
+}
+[data-theme="light"] .ai-highlight p { color: #374151; }
+.ai-highlight .source { margin-top: 12px; }
+"""
+
+    return f"""<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI-nyheter – {human_date}</title>
+{THEME_SCRIPT}
+<style>{CSS}{ai_css_extra}</style>
+</head>
+<body>
+<div class="wrapper">
+  <header class="site-header">
+    <div class="header-left"><h1>🤖 AI-nyheter</h1><p>Internasjonale AI- og tech-nyheter på norsk</p></div>
+    {_nav("ai")}
+  </header>
+  <div class="content">
+    <div class="date-badge">📅 {human_date}</div>
+    {highlight_html}
+    {sections_html}
+  </div>
+  <footer class="site-footer">
+    Automatisk generert av Claude · {human_date} · Kilder: TechCrunch, The Verge, Ars Technica, VentureBeat, MIT Tech Review, Wired
+  </footer>
+</div>
+</body>
+</html>"""
 
 
 # ---------------------------------------------------------------------------
@@ -537,6 +770,31 @@ a:hover { text-decoration: underline; }
   .site-footer { padding: 18px 20px; }
 }
 
+/* AI banner */
+.ai-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.ai-banner:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  background: var(--accent-light);
+  text-decoration: none;
+}
+[data-theme="dark"] .ai-banner:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.ai-banner-icon { font-size: 20px; flex-shrink: 0; }
+.ai-banner-text { flex: 1; font-size: 14px; color: var(--text-muted); }
+.ai-banner-text strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 2px; }
+.ai-banner-arrow { color: var(--accent); font-size: 18px; font-weight: 600; flex-shrink: 0; }
+
 /* Weather block */
 .weather-block { margin-bottom: 8px; }
 .weather-today {
@@ -604,10 +862,12 @@ function toggleTheme() {
 def _nav(current: str = "brief") -> str:
     archive_class = ' class="active"' if current == "archive" else ""
     brief_class   = ' class="active"' if current == "brief"   else ""
+    ai_class      = ' class="active"' if current == "ai"      else ""
     return (
         f'<div class="header-right">'
         f'<nav>'
-        f'<a href="/webside/"{brief_class}>Siste brief</a>'
+        f'<a href="/webside/"{brief_class}>Morgenbrief</a>'
+        f'<a href="/webside/ai-nyheter/"{ai_class}>🤖 AI-nyheter</a>'
         f'<a href="/webside/archive/"{archive_class}>Arkiv</a>'
         f'</nav>'
         f'<div class="theme-toggle-wrap">'
@@ -727,6 +987,11 @@ def render_brief_html(brief: dict, date_str: str, date_obj: datetime,
   </header>
   <div class="content">
     <div class="date-badge">📅 {human_date}</div>
+    <a href="/webside/ai-nyheter/" class="ai-banner">
+      <span class="ai-banner-icon">🤖</span>
+      <span class="ai-banner-text"><strong>AI-nyheter</strong> – Internasjonale AI- og tech-nyheter på norsk</span>
+      <span class="ai-banner-arrow">→</span>
+    </a>
     {weather_html}
     {sections_html}
     {watchlist_html}
@@ -848,6 +1113,17 @@ def main() -> None:
     archive_index_html = render_archive_html(entries)
     (ARCHIVE_DIR / "index.html").write_text(archive_index_html, encoding="utf-8")
     print(f"  ✅  Oppdaterte archive/index.html ({len(entries)} utgaver)")
+
+    # 8. Generer AI-nyheter
+    print(f"\n🤖  Genererer AI-nyhetsside …")
+    ai_articles = fetch_ai_articles(hours=48)
+    if ai_articles:
+        ai_brief = generate_ai_brief(ai_articles, date_str)
+        ai_html = render_ai_brief_html(ai_brief, date_str, now)
+        (AI_DIR / "index.html").write_text(ai_html, encoding="utf-8")
+        print(f"  ✅  Oppdaterte ai-nyheter/index.html")
+    else:
+        print("  ⚠️  Ingen AI-artikler funnet – hopper over AI-siden.")
 
     print("🎉  Ferdig!")
 
