@@ -770,6 +770,31 @@ a:hover { text-decoration: underline; }
   .site-footer { padding: 18px 20px; }
 }
 
+/* AI banner */
+.ai-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.ai-banner:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  background: var(--accent-light);
+  text-decoration: none;
+}
+[data-theme="dark"] .ai-banner:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.ai-banner-icon { font-size: 20px; flex-shrink: 0; }
+.ai-banner-text { flex: 1; font-size: 14px; color: var(--text-muted); }
+.ai-banner-text strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 2px; }
+.ai-banner-arrow { color: var(--accent); font-size: 18px; font-weight: 600; flex-shrink: 0; }
+
 /* Weather block */
 .weather-block { margin-bottom: 8px; }
 .weather-today {
@@ -962,6 +987,11 @@ def render_brief_html(brief: dict, date_str: str, date_obj: datetime,
   </header>
   <div class="content">
     <div class="date-badge">📅 {human_date}</div>
+    <a href="/webside/ai-nyheter/" class="ai-banner">
+      <span class="ai-banner-icon">🤖</span>
+      <span class="ai-banner-text"><strong>AI-nyheter</strong> – Internasjonale AI- og tech-nyheter på norsk</span>
+      <span class="ai-banner-arrow">→</span>
+    </a>
     {weather_html}
     {sections_html}
     {watchlist_html}
