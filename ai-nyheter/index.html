@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AI-nyheter – Morgenbrief</title>
+<script>
+(function(){
+  var t = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<script>
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme');
+  var next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+</script>
+<style>
+:root {
+  --bg: #f8f7f4; --surface: #ffffff; --text: #1a1a1a; --text-muted: #6b7280;
+  --accent: #2563eb; --border: #e5e3de; --header-bg: #0f172a;
+  --header-text: #f1f5f9; --header-muted: #94a3b8; --badge-bg: #1e293b;
+  --footer-bg: #0f172a; --footer-text: #64748b; --toggle-bg: #334155;
+}
+[data-theme="dark"] {
+  --bg: #0f172a; --surface: #1e293b; --text: #f1f5f9; --text-muted: #94a3b8;
+  --accent: #60a5fa; --border: #334155; --header-bg: #020617;
+  --badge-bg: #334155; --footer-bg: #020617; --footer-text: #475569;
+  --toggle-bg: #60a5fa;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif; background: var(--bg); color: var(--text); line-height: 1.65; }
+a { color: var(--accent); text-decoration: none; }
+.wrapper { max-width: 720px; margin: 0 auto; }
+.site-header { background: var(--header-bg); padding: 24px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+.header-left h1 { color: var(--header-text); font-size: 20px; font-weight: 700; }
+.header-left p { color: var(--header-muted); font-size: 13px; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.site-header nav a { color: var(--header-muted); font-size: 13px; text-decoration: none; padding-bottom: 2px; border-bottom: 2px solid transparent; transition: color 0.15s, border-color 0.15s; margin-right: 16px; }
+.site-header nav a:hover, .site-header nav a.active { color: var(--header-text); border-bottom-color: var(--accent); }
+.theme-toggle { background: var(--toggle-bg); border: none; border-radius: 20px; width: 44px; height: 24px; cursor: pointer; position: relative; }
+.theme-toggle::after { content: ""; position: absolute; top: 3px; left: 3px; width: 18px; height: 18px; border-radius: 50%; background: #fff; transition: transform 0.2s; }
+[data-theme="dark"] .theme-toggle::after { transform: translateX(20px); }
+.theme-toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.content { padding: 60px 40px; text-align: center; }
+.content h2 { font-size: 22px; font-weight: 600; margin-bottom: 16px; color: var(--text); }
+.content p { font-size: 15px; color: var(--text-muted); max-width: 420px; margin: 0 auto; }
+.site-footer { background: var(--footer-bg); padding: 20px 40px; text-align: center; font-size: 12px; color: var(--footer-text); }
+@media (max-width: 600px) { .site-header, .content { padding: 18px 20px; } }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header class="site-header">
+    <div class="header-left"><h1>🤖 AI-nyheter</h1><p>Internasjonale AI- og tech-nyheter på norsk</p></div>
+    <div class="header-right">
+      <nav>
+        <a href="/webside/">Morgenbrief</a>
+        <a href="/webside/ai-nyheter/" class="active">🤖 AI-nyheter</a>
+        <a href="/webside/archive/">Arkiv</a>
+      </nav>
+      <div class="theme-toggle-wrap">
+        <span>☀️</span>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Bytt tema"></button>
+        <span>🌙</span>
+      </div>
+    </div>
+  </header>
+  <div class="content">
+    <h2>Siden genereres neste morgen ☕</h2>
+    <p>AI-nyhetssiden oppdateres automatisk neste gang morgenbriefen kjøres. Kom tilbake i morgen!</p>
+  </div>
+  <footer class="site-footer">Automatisk generert av Claude</footer>
+</div>
+</body>
+</html>
