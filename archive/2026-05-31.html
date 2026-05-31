@@ -270,6 +270,31 @@ a:hover { text-decoration: underline; }
   .site-footer { padding: 18px 20px; }
 }
 
+/* AI banner */
+.ai-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.ai-banner:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  background: var(--accent-light);
+  text-decoration: none;
+}
+[data-theme="dark"] .ai-banner:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.ai-banner-icon { font-size: 20px; flex-shrink: 0; }
+.ai-banner-text { flex: 1; font-size: 14px; color: var(--text-muted); }
+.ai-banner-text strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 2px; }
+.ai-banner-arrow { color: var(--accent); font-size: 18px; font-weight: 600; flex-shrink: 0; }
+
 /* Weather block */
 .weather-block { margin-bottom: 8px; }
 .weather-today {
@@ -320,10 +345,15 @@ a:hover { text-decoration: underline; }
 <div class="wrapper">
   <header class="site-header">
     <div class="header-left"><h1>☕ Morgenbrief</h1><p>Nyheter fra de siste 48 timene</p></div>
-    <div class="header-right"><nav><a href="/webside/" class="active">Siste brief</a><a href="/webside/archive/">Arkiv</a></nav><div class="theme-toggle-wrap"><span>☀️</span><button class="theme-toggle" onclick="toggleTheme()" aria-label="Bytt tema"></button><span>🌙</span></div></div>
+    <div class="header-right"><nav><a href="/webside/" class="active">Morgenbrief</a><a href="/webside/ai-nyheter/">🤖 AI-nyheter</a><a href="/webside/archive/">Arkiv</a></nav><div class="theme-toggle-wrap"><span>☀️</span><button class="theme-toggle" onclick="toggleTheme()" aria-label="Bytt tema"></button><span>🌙</span></div></div>
   </header>
   <div class="content">
     <div class="date-badge">📅 søndag 31. May 2026</div>
+    <a href="/webside/ai-nyheter/" class="ai-banner">
+      <span class="ai-banner-icon">🤖</span>
+      <span class="ai-banner-text"><strong>AI-nyheter</strong> – Internasjonale AI- og tech-nyheter på norsk</span>
+      <span class="ai-banner-arrow">→</span>
+    </a>
     
       <div class="weather-block">
         <div class="section-title"><span>🌤️</span>Vær i Skien</div>
@@ -380,19 +410,19 @@ a:hover { text-decoration: underline; }
         <div class="section-title"><span>🏦</span>Bank, finans og næringsliv</div>
         
         <div class="news-item">
-          <strong>Enighet i vekteroverenskomsten etter 16 timer mekling</strong>
-          <p>Norsk Arbeidsmandsforbund og NHO Service og Handel ble enige natt til søndag. Alle vektere får 10,5 kroner mer per time, pluss forskuttering av sykepenger.</p>
+          <strong>Arbeidsplassveksten fortsetter i Skien</strong>
+          <p>Skien har hatt vekst i antall arbeidsplasser i sju kvartaler på rad. Ordfører fremhever høy aktivitet innen næringsliv og byggeprosjekter samt positiv utvikling i privat sektor.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/arbeidsplassveksten-fortsetter-i-skien-1.17902799" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Enighet i vekteroverenskomsten etter 16 timer med mekling</strong>
+          <p>Norsk Arbeidsmandsforbund og NHO Service og Handel ble enige om lønnsavtale. Vektere får 10,5 kroner timeslønn økning, sikring av forskutt sykepenger og fagbrevtillegg på 5 kroner.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/enighet-i-vekteroverenskomsten-1.17902875" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
-          <strong>Streik i renholdsbransjen over etter tre uker</strong>
-          <p>Norsk Arbeidsmandsforbund og NHO Service og Handel enige. Over 3500 medlemmer får lønnstillegg og sikret forskuttering av sykepenger.</p>
+          <strong>Renholdsstrejken avsluttet etter tre uker</strong>
+          <p>Norsk Arbeidsmandsforbund og NHO Service ble enige. Over 3500 medlemmer får lønnsøkning, generelt tillegg og sikret forskutering av sykepenger.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/streiken-i-renholdsbransjen-over-etter-tre-uker-1.17902867" target="_blank" rel="noopener">NRK Siste</a></span>
-        </div>
-        <div class="news-item">
-          <strong>Arbeidsplassveksten fortsetter i Skien</strong>
-          <p>Skien har hatt vekst i arbeidsplasser i sju kvartaler på rad. Både privat og offentlig sektor viser positiv utvikling sammenlignet med landet.</p>
-          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/arbeidsplassveksten-fortsetter-i-skien-1.17902799" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
       </div>
       <hr class="section-divider">
@@ -400,13 +430,13 @@ a:hover { text-decoration: underline; }
         <div class="section-title"><span>🤖</span>Kunstig intelligens og teknologi</div>
         
         <div class="news-item">
-          <strong>KI skal ta over kyllingkontroll ved norsk fabrikk</strong>
-          <p>Ved fabrikken i Orkanger kontrolleres 13.500 kyllinger hver time. Kunstig intelligens skal nå erstatte manuell inspeksjon.</p>
+          <strong>KI skal overta kyllingkontroll på fabrikk</strong>
+          <p>Fabrikken i Orkanger kontrollerer 13.500 kyllinger hver time. Kunstig intelligens skal nå erstatte manual inspeksjon av fuglene.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/erstatter-manuell-kylling-kontroll-med-kunstig-intelligens/572698" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
         <div class="news-item">
-          <strong>Steinsamlinger brukes som testlaboratorium for Mars-prøver</strong>
-          <p>Forskere leter etter bergarter som ligner det som finnes på den røde planeten, for å forberede framtidige Mars-oppdrag.</p>
+          <strong>Lab-steiner testes for Mars-forskning</strong>
+          <p>Forskere leter etter bergarter som ligner det som finnes på den røde planeten, for å forberede fremtidige Mars-prøver.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/disse-steinene-er-lab-rotter-for-mars-prover/571745" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
       </div>
@@ -416,18 +446,18 @@ a:hover { text-decoration: underline; }
         
         <div class="news-item">
           <strong>Arbeidsplassveksten fortsetter i Skien</strong>
-          <p>Skien har hatt vekst i arbeidsplasser i sju kvartaler på rad. Både privat og offentlig sektor viser positiv utvikling sammenlignet med landet.</p>
+          <p>Skien har hatt vekst i antall arbeidsplasser i sju kvartaler på rad. Ordfører fremhever høy aktivitet innen næringsliv og byggeprosjekter samt positiv utvikling.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/arbeidsplassveksten-fortsetter-i-skien-1.17902799" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
         <div class="news-item">
-          <strong>Mann pågrepet etter knivhendelse i Sandefjord</strong>
-          <p>Mann ble pågrepet etter å ha truet en annen mann med kniv ved Badeparken. Han er kjørt til arresten.</p>
-          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/mann-pagrepet-etter-knivhendelse-i-sandefjord-1.17902687" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+          <strong>Tre hytteinnbrudd i Hjartdal</strong>
+          <p>Politiet har mottatt meldinger om minst tre innbrudd i hytter i Hjartdal denne helgen. Dør ble brutt opp og knust på minst en hytte.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/tre-hytteinnbrudd-i-hjartdal--1.17902994" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
         <div class="news-item">
-          <strong>Tre hytteinnbrudd i Hjartdal denne helgen</strong>
-          <p>Politiet har fått meldinger om minst tre innbrudd i hytter. Det er uavklart hva som er stjålet fra stedene.</p>
-          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/tre-hytteinnbrudd-i-hjartdal--1.17902994" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+          <strong>Mann pågrepet etter knivhendelse i Sandefjord</strong>
+          <p>Politiet kontrollerte mann som viste fram og truet med kniv i Badeparken. Mannen er pågrepet og kjørt til arresten.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/mann-pagrepet-etter-knivhendelse-i-sandefjord-1.17902687" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
         </div>
       </div>
       <hr class="section-divider">
@@ -436,17 +466,17 @@ a:hover { text-decoration: underline; }
         
         <div class="news-item">
           <strong>Barneombudet ber skoler heise pride-flagg i juni</strong>
-          <p>Barneombudet Mina Gerhardsen oppfordrer alle skoler å markere pride-måneden. Flagget er viktig signal om inkludering til skeive barn.</p>
+          <p>Barneombudets Mina Gerhardsen ber alle landets skoler hisse regnbueflagg for å markere pride og signalisere trygghet for skeive elever og familier.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/barneombudet-ber-skoler-heise-pride-flagg-i-juni-1.17903027" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
-          <strong>30 norske organisasjoner krever stopp i tobakkssalg</strong>
-          <p>På verdens tobakkfrie dag krever Kreftforeningen, Legeforeningen og andre at tobakk og nikotin skal ut av butikker innen ti år.</p>
+          <strong>30 organisasjoner krever stans i tobakkssalg</strong>
+          <p>På verdens tobakkfrie dag krever omkring 30 norske organisasjoner å få tobakk og nikotin ut av butikkhyllene innen ti år. Kreftforeningen og Legeforeningen blant støttespillerne.</p>
           <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/krever-stans-i-salg-av-tobakk-og-nikotin-1.17902983" target="_blank" rel="noopener">NRK Siste</a></span>
         </div>
         <div class="news-item">
-          <strong>Malaysia kritiserer Norge for kansellering av forsvarsavtale</strong>
-          <p>Malaysias forsvarsminister langer ut på sikkerhetskonferanse etter at Norge kansellerte omfattende forsvarssamarbeid.</p>
+          <strong>Norge kansellerte forsvarsavtale med Malaysia</strong>
+          <p>Malaysias forsvarsminister angriper Norge på sikkerhetskonferanse etter at landet kansellerte omfattende forsvarsavtale.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/malaysia-langer-ut-pa-sikkerhetskonferanse-etter-at-norge-kansellerte-forsvarsavtale/572845" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
       </div>
@@ -455,20 +485,15 @@ a:hover { text-decoration: underline; }
         <div class="section-title"><span>⚡</span>Energi og strøm</div>
         
         <div class="news-item">
-          <strong>EU-kommisjonen vil lempe utslippskrav for olje og gass</strong>
-          <p>Etter norsk press lemper EU på utslippsregler. Beslutningen kommer også etter press fra USA og petroleumssektoren.</p>
+          <strong>EU-kommisjonen lemper på utslippsregler for olje og gass</strong>
+          <p>Etter norsk press sammen med USA og petroleumssektoren vil EU-kommisjonen lempe på utslippsreglene for fossile energikilder.</p>
           <span class="source">Kilde: <a href="https://www.tu.no/artikler/eu-kommi-sjonen-vil-lempe-pa-utslipps-regler-for-olje-og-gass-etter-norsk-press/572842" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
-        </div>
-        <div class="news-item">
-          <strong>Droneangrep rammet Zaporizjzja-atomkraftverket</strong>
-          <p>En drone traff turbinbygning ved ukrainsk atomkraftverk. IAEA uttrykker bekymring over angrep på atomfasiliteter.</p>
-          <span class="source">Kilde: <a href="https://www.tu.no/artikler/droneangrep-rammet-atomkraftverket-i-zaporizjzja/572848" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
         </div>
       </div>
     
       <div class="watchlist">
         <h3>💡 Verdt å følge med på</h3>
-        <ul><li><strong>Israel-Libanon eskalering</strong> – Israel trappar opp bakkeoperasjoner nord for Litani-elven og ber sivile evakuere – konflikt kan utvides betydelig.</li><li><strong>Skipstrafikk gjennom Hormuzstredet</strong> – Krig mellom USA/Israel og Iran har medført store forstyrrelser i kritisk oljerute – kan påvirke globale oljemarginaler.</li><li><strong>Bilstreik i Telemark</strong> – Hvis mekling mandag mislykkes, kan over 380 ansatte i bilbransjen streike fra onsdag og ramme flere verksteder.</li></ul>
+        <ul><li><strong>Eskalering i Libanon – Israel øker bakkeoffensiven</strong> – Israel har passert Litani-elven og beordrer sivil evakuering sør for Zahrani-elven, mens Frankrike krever FN-møte og Utenriksminister Eide advarer om folkerettsbrudd.</li><li><strong>Bilstreik kan ramme Telemark fra onsdag</strong> – Dersom Fellesforbundet og Norges Bilbransjeforbund ikke blir enige ved mandag-mekling, kan streik ramme omkring 380 ansatte i Telemark fra onsdag.</li><li><strong>Drone fløy ulovlig nær Gardermoen lufthavn</strong> – Politiet beslagla drone som fløy innenfor flyforbudssonen rundt Oslo Lufthavn – sak anmeldt og kan skjerpe dronereguleringer.</li></ul>
       </div>
   </div>
   <footer class="site-footer">
