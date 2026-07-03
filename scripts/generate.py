@@ -124,6 +124,66 @@ def fetch_articles(hours: int = 48) -> list[dict]:
             print(f"  ⚠️  Feil ved henting av {url}: {exc}")
 
     print(f"  📡  Hentet {len(articles)} artikler fra {len(FEEDS)} feeder")
+
+    # Hent også topp-nyheter fra World News API hvis nøkkel finnes
+    top_news = fetch_top_news()
+    articles.extend(top_news)
+    if top_news:
+        print(f"  📡  La til {len(top_news)} artikler fra World News API")
+
+    return articles
+
+
+# ---------------------------------------------------------------------------
+# World News API – norske topp-nyheter
+# ---------------------------------------------------------------------------
+
+def fetch_top_news() -> list[dict]:
+    api_key = os.environ.get("WORLDNEWSAPI_KEY")
+    if not api_key:
+        return []
+
+    import requests
+
+    try:
+        resp = requests.get(
+            "https://api.worldnewsapi.com/top-news",
+            params={
+                "source-country": "no",
+                "language":       "no",
+                "headlines-only": "false",
+            },
+            headers={"x-api-key": api_key},
+            timeout=15,
+        )
+        resp.raise_for_status()
+        data = resp.json()
+    except Exception as exc:
+        print(f"  ⚠️  World News API feilet: {exc}")
+        return []
+
+    articles = []
+    for cluster in data.get("top_news", []):
+        for item in cluster.get("news", []):
+            title   = (item.get("title") or "").strip()
+            summary = (item.get("summary") or item.get("text") or "").strip()
+            summary = re.sub(r"\s+", " ", summary)[:600]
+            link    = item.get("url", "")
+            pub_raw = item.get("publish_date", "")
+            try:
+                pub = datetime.fromisoformat(pub_raw.replace("Z", "+00:00"))
+            except Exception:
+                pub = datetime.now(timezone.utc)
+
+            if title:
+                articles.append({
+                    "source":    "World News API",
+                    "title":     title,
+                    "summary":   summary,
+                    "link":      link,
+                    "published": pub.isoformat(),
+                })
+
     return articles
 
 
