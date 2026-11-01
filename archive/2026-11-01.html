@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Morgenbrief – søndag 1. November 2026</title>
+
+<script>
+(function(){
+  var t = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<script>
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme');
+  var next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+</script>
+
+<style>
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface2: #f0eeea;
+  --text: #1a1a1a;
+  --text-muted: #6b7280;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --border: #e5e3de;
+  --header-bg: #0f172a;
+  --header-text: #f1f5f9;
+  --header-muted: #94a3b8;
+  --badge-bg: #1e293b;
+  --footer-bg: #0f172a;
+  --footer-text: #64748b;
+  --watchlist-bg: #eff6ff;
+  --watchlist-border: #2563eb;
+  --toggle-bg: #334155;
+  --toggle-icon: "🌙";
+}
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #273548;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --accent: #60a5fa;
+  --accent-light: #1e3a5f;
+  --border: #334155;
+  --header-bg: #020617;
+  --header-text: #f1f5f9;
+  --header-muted: #64748b;
+  --badge-bg: #334155;
+  --footer-bg: #020617;
+  --footer-text: #475569;
+  --watchlist-bg: #1e3a5f;
+  --watchlist-border: #60a5fa;
+  --toggle-bg: #60a5fa;
+  --toggle-icon: "☀️";
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  transition: background 0.2s, color 0.2s;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrapper { max-width: 720px; margin: 0 auto; }
+
+/* Header */
+.site-header {
+  background: var(--header-bg);
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.header-left h1 {
+  color: var(--header-text);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.header-left p { color: var(--header-muted); font-size: 13px; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.site-header nav a {
+  color: var(--header-muted);
+  font-size: 13px;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.site-header nav a:hover,
+.site-header nav a.active { color: var(--header-text); border-bottom-color: var(--accent); }
+
+/* Theme toggle */
+.theme-toggle {
+  background: var(--toggle-bg);
+  border: none;
+  border-radius: 20px;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+[data-theme="dark"] .theme-toggle::after { transform: translateX(20px); }
+.theme-toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.theme-toggle-wrap span { font-size: 14px; line-height: 1; }
+
+/* Content */
+.content { padding: 36px 40px; }
+
+/* Date badge */
+.date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--badge-bg);
+  color: var(--header-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  letter-spacing: 0.3px;
+}
+
+/* Sections */
+.section { margin-bottom: 36px; }
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* News items */
+.news-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.15s;
+}
+.news-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+[data-theme="dark"] .news-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.news-item strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+.news-item p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.news-item .source {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.news-item .source::before { content: "↗"; font-size: 10px; }
+.news-item .source a { color: var(--accent); font-weight: 500; }
+
+/* Watchlist */
+.watchlist {
+  background: var(--watchlist-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--watchlist-border);
+  padding: 20px 24px;
+  border-radius: 0 10px 10px 0;
+  margin-top: 8px;
+}
+.watchlist h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.watchlist ul { padding-left: 0; list-style: none; }
+.watchlist li {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 10px;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+.watchlist li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.watchlist li strong { font-weight: 600; }
+
+/* Archive list */
+.archive-list { list-style: none; }
+.archive-list li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: box-shadow 0.15s;
+}
+.archive-list li:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.archive-list li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+}
+.archive-list li a:hover { color: var(--accent); }
+.archive-list li a span { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+
+/* Footer */
+.site-footer {
+  background: var(--footer-bg);
+  padding: 20px 40px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--footer-text);
+  margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .site-header, .content { padding: 18px 20px; }
+  .site-footer { padding: 18px 20px; }
+}
+
+/* AI banner */
+.ai-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.ai-banner:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  background: var(--accent-light);
+  text-decoration: none;
+}
+[data-theme="dark"] .ai-banner:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.ai-banner-icon { font-size: 20px; flex-shrink: 0; }
+.ai-banner-text { flex: 1; font-size: 14px; color: var(--text-muted); }
+.ai-banner-text strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 2px; }
+.ai-banner-arrow { color: var(--accent); font-size: 18px; font-weight: 600; flex-shrink: 0; }
+
+/* Weather block */
+.weather-block { margin-bottom: 8px; }
+.weather-today {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px 0;
+  margin-bottom: 12px;
+}
+.weather-hour-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.weather-hour-row:last-child { border-bottom: none; }
+.weather-hour-time { width: 44px; font-weight: 600; color: var(--text); flex-shrink: 0; }
+.weather-hour-icon { font-size: 18px; flex-shrink: 0; }
+.weather-hour-temp { width: 42px; font-weight: 700; font-size: 15px; color: var(--text); flex-shrink: 0; }
+.weather-hour-detail { color: var(--text-muted); font-size: 13px; min-width: 72px; }
+.weather-forecast { display: flex; gap: 10px; flex-wrap: wrap; }
+.weather-forecast-card {
+  flex: 1;
+  min-width: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.weather-fc-label {
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  margin-bottom: 6px; letter-spacing: 0.2px;
+}
+.weather-fc-icon { font-size: 24px; margin-bottom: 6px; }
+.weather-fc-temps { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.weather-fc-precip { font-size: 12px; color: var(--text-muted); }
+
+@media (max-width: 600px) {
+  .weather-hour-row { gap: 8px; padding: 10px 14px; }
+  .weather-forecast-card { min-width: 80px; padding: 12px 8px; }
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header class="site-header">
+    <div class="header-left"><h1>☕ Morgenbrief</h1><p>Nyheter fra de siste 48 timene</p></div>
+    <div class="header-right"><nav><a href="/webside/" class="active">Morgenbrief</a><a href="/webside/ai-nyheter/">🤖 AI-nyheter</a><a href="/webside/archive/">Arkiv</a></nav><div class="theme-toggle-wrap"><span>☀️</span><button class="theme-toggle" onclick="toggleTheme()" aria-label="Bytt tema"></button><span>🌙</span></div></div>
+  </header>
+  <div class="content">
+    <div class="date-badge">📅 søndag 1. November 2026</div>
+    <a href="/webside/ai-nyheter/" class="ai-banner">
+      <span class="ai-banner-icon">🤖</span>
+      <span class="ai-banner-text"><strong>AI-nyheter</strong> – Internasjonale AI- og tech-nyheter på norsk</span>
+      <span class="ai-banner-arrow">→</span>
+    </a>
+    
+      <div class="weather-block">
+        <div class="section-title"><span>🌤️</span>Vær i Skien</div>
+        <div class="weather-today">
+          
+        <div class="weather-hour-row">
+          <span class="weather-hour-time">12:00</span>
+          <span class="weather-hour-icon" title="Overskyet">☁️</span>
+          <span class="weather-hour-temp">9°</span>
+          <span class="weather-hour-detail">💨 1 m/s</span>
+          <span class="weather-hour-detail">🌧 –</span>
+        </div>
+        <div class="weather-hour-row">
+          <span class="weather-hour-time">15:00</span>
+          <span class="weather-hour-icon" title="Delvis skyet">⛅</span>
+          <span class="weather-hour-temp">10°</span>
+          <span class="weather-hour-detail">💨 0 m/s</span>
+          <span class="weather-hour-detail">🌧 –</span>
+        </div>
+        <div class="weather-hour-row">
+          <span class="weather-hour-time">18:00</span>
+          <span class="weather-hour-icon" title="Overskyet">☁️</span>
+          <span class="weather-hour-temp">8°</span>
+          <span class="weather-hour-detail">💨 1 m/s</span>
+          <span class="weather-hour-detail">🌧 –</span>
+        </div>
+        </div>
+        <div class="weather-forecast">
+          
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">mandag 2. november</div>
+          <div class="weather-fc-icon" title="Klarvær">☀️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 –</div>
+        </div>
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">tirsdag 3. november</div>
+          <div class="weather-fc-icon" title="Lettskyet">🌤️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 –</div>
+        </div>
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">onsdag 4. november</div>
+          <div class="weather-fc-icon" title="Klarvær">☀️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 –</div>
+        </div>
+        </div>
+      </div>
+      <hr class="section-divider">
+    
+      
+      <div class="section">
+        <div class="section-title"><span>🤖</span>Kunstig intelligens og teknologi</div>
+        
+        <div class="news-item">
+          <strong>KI-modell avslører hjertesvikt</strong>
+          <p>Forskere har utviklet egen KI-modell som kan oppdage hjertesvikt som ellers blir oversett.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/helseteknologi/bygget-egen-ki-modell-for-a-avslore-hjertesvikt/7178796" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Dataangrep ved Universitetet i Tromsø</strong>
+          <p>Målrettet cyberangrep pågår mot universitetet. Aktøren har store ressurser og angrepet fortsetter.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/sikkerhet/pagaende-dataangrep-ved-universitetet-i-tromso-ber-studenter-og-ansatte-om-a-vaere-varsomme/7180274" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Nord-Korea stod bak kryptotyveri på 60 milliarder kroner</strong>
+          <p>FBI bekrefter at nordkoreanske hackere stjal over 6 milliarder dollar fra kryptobørsen Binance og hvitvasket midlene.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/fbi_-nord-korea-stod-bak-tjuveriet-av-nesten-60-milliardar-kroner-i-kryptovaluta-1.18070245" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+      </div>
+      <hr class="section-divider">
+      <div class="section">
+        <div class="section-title"><span>🏔️</span>Telemark og Skien</div>
+        
+        <div class="news-item">
+          <strong>Ung MC-fører livstruende skadet i Tønsberg</strong>
+          <p>Tenåring kolliderte med varebil og fløy til Ullevål sykehus med hodeskader. Varebilsjåføren mistenkt for å ha forårsaket ulykken.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/tonsberg_-ung-mc-forer-livstruende-skadet-1.18069761" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Fire svensker tiltalt for grovt ran i Sandefjord</strong>
+          <p>Tre menn og en kvinne i 20-årene tiltales for grov vold, trussel med kniv og skytevåpen under ran mot person.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/fire-svensker-tiltalt-for-grovt-ran-i-sandefjord-1.18069544" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Voldtektstiltalt (37) har kronisk personlighetsforstyrrelse</strong>
+          <p>Sakkyndige slår fast at mannen har dyssosial personlighetsforstyrrelse og stor fare for nye alvorlige overgrep.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/vestfoldogtelemark/sakkyndige_-voldtektstiltalt-_37_-har-kronisk-diagnose-1.18069527" target="_blank" rel="noopener">NRK Vestfold og Telemark</a></span>
+        </div>
+      </div>
+      <hr class="section-divider">
+      <div class="section">
+        <div class="section-title"><span>🏛️</span>Norsk politikk og samfunn</div>
+        
+        <div class="news-item">
+          <strong>Kong Haakon hedret Forsvarets falne</strong>
+          <p>Kongen var til stede på Forsvarets minnedag på Akershus festning. Markeringen skjedde for 20. gang og minnes Forsvarets døde.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/kongen-hedret-forsvarets-falne-1.18070481" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Foreldre tiltalt for grov mishandling av fire barn</strong>
+          <p>Par tiltales for systematisk mishandling av tre døtre og en sønn fra 2012 til 2019 med slag, sparking og lugger.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/foreldre-tiltalt-for-grov-mishandling-av-fire-barn-1.18070477" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Norsk vegansamfunn møter staten i ny rettssak</strong>
+          <p>Organisasjonen saksøker staten for å få godkjenning som livssynssamfunn. Ankesaken starter tirsdag i Borgarting lagmannsrett.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/norsk-vegansamfunn-moter-staten-i-ny-rettssak_-_-veganisme-er-et-livssyn-1.18070445" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Fire omkom i oktobertrafikken – laveste antall registrert</strong>
+          <p>Oktober hadde færre trafikkdødsfall enn tidligere år, men året ligger høyere enn i fjor med 98 drepte.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/fire-omkom-i-oktobertrafikken-_-laveste-antall-registrert-1.18070370" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>FN: Verden må trappe opp naturtiltakene raskt</strong>
+          <p>COP17-gjennomgang viser at mindre enn halvparten av landene er i rute til å nå 23 globale naturmål innen 2030.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/fn_-_verden-ma-trappe-opp-tiltakene-raskt-for-a-stanse-tap-av-natur_-1.18070371" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+      </div>
+      <hr class="section-divider">
+      <div class="section">
+        <div class="section-title"><span>⚡</span>Energi og strøm</div>
+        
+        <div class="news-item">
+          <strong>Datasentre står for 70 prosent av Statnetts ettersporsel</strong>
+          <p>Konsernsjef understreker at mer nett alene ikke løser strømutfordringen med ekspanderende datasentre.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/energi/datasentre-star-for-70-prosent-av-arets-ettersporsel-hos-statnett/7180106" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>CO2-lagring får ny dimensjon gjennom unikt samarbeid</strong>
+          <p>Aktører testet CO2-lagring sammen og oppnådde resultater som går utover rene data.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/energi/et-litt-tilfeldig-samarbeid-ga-felttestene-en-ny-dimensjon/7178223" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Havvindprosjekt tester storskala turbiner</strong>
+          <p>Deep Wind Offshore skal teste større turbiner som springbrett til storskala havvind i Norge.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/energi/na-skal-de-teste-skikkelig-store-turbiner/7180028" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Hydrogenanlegg mister 200 millioner etter kabelforsinkelse</strong>
+          <p>Anlegg for hydrogenfyllestasjon får ikke nok strøm og mister finansiering som del av kystnettverksplan.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/maritim/mister-200-mill-til-hydrogenanlegg-etter-kabelforsinkelse/7179740" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+      </div>
+    
+      <div class="watchlist">
+        <h3>💡 Verdt å følge med på</h3>
+        <ul><li><strong>Ukraina-forhandlinger kan trilokaliseres</strong> – Kreml vil primært forhandle med USA og Ukraina før europeiske land inkluderes, noe som kan påvirke fredsprosess betydelig.</li><li><strong>Sotra-prosjekt risikerer byggestans</strong> – Entreprenør varsler mulig stopp på grunn av ubetalte millioner og usikkerhet om finansiering etter desember 2026.</li><li><strong>Voldtektsdom-saken i Tønsberg</strong> – Mann med kronisk personlighetsforstyrrelse og høy risiko for nye overgrep kan få domsfelling med konsekvenser for fremtidig prøveløslatelser.</li></ul>
+      </div>
+  </div>
+  <footer class="site-footer">
+    Automatisk generert av Claude · søndag 1. November 2026 · Kilder: NRK, E24, Nettavisen, Digi.no m.fl.
+  </footer>
+</div>
+</body>
+</html>
