@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Morgenbrief – onsdag 18. November 2026</title>
+
+<script>
+(function(){
+  var t = localStorage.getItem('theme') || 'light';
+  document.documentElement.setAttribute('data-theme', t);
+})();
+</script>
+<script>
+function toggleTheme() {
+  var current = document.documentElement.getAttribute('data-theme');
+  var next = current === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
+}
+</script>
+
+<style>
+:root {
+  --bg: #f8f7f4;
+  --surface: #ffffff;
+  --surface2: #f0eeea;
+  --text: #1a1a1a;
+  --text-muted: #6b7280;
+  --accent: #2563eb;
+  --accent-light: #eff6ff;
+  --border: #e5e3de;
+  --header-bg: #0f172a;
+  --header-text: #f1f5f9;
+  --header-muted: #94a3b8;
+  --badge-bg: #1e293b;
+  --footer-bg: #0f172a;
+  --footer-text: #64748b;
+  --watchlist-bg: #eff6ff;
+  --watchlist-border: #2563eb;
+  --toggle-bg: #334155;
+  --toggle-icon: "🌙";
+}
+[data-theme="dark"] {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface2: #273548;
+  --text: #f1f5f9;
+  --text-muted: #94a3b8;
+  --accent: #60a5fa;
+  --accent-light: #1e3a5f;
+  --border: #334155;
+  --header-bg: #020617;
+  --header-text: #f1f5f9;
+  --header-muted: #64748b;
+  --badge-bg: #334155;
+  --footer-bg: #020617;
+  --footer-text: #475569;
+  --watchlist-bg: #1e3a5f;
+  --watchlist-border: #60a5fa;
+  --toggle-bg: #60a5fa;
+  --toggle-icon: "☀️";
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+  transition: background 0.2s, color 0.2s;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.wrapper { max-width: 720px; margin: 0 auto; }
+
+/* Header */
+.site-header {
+  background: var(--header-bg);
+  padding: 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.header-left h1 {
+  color: var(--header-text);
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.3px;
+}
+.header-left p { color: var(--header-muted); font-size: 13px; margin-top: 2px; }
+.header-right { display: flex; align-items: center; gap: 20px; }
+.site-header nav a {
+  color: var(--header-muted);
+  font-size: 13px;
+  text-decoration: none;
+  padding-bottom: 2px;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+.site-header nav a:hover,
+.site-header nav a.active { color: var(--header-text); border-bottom-color: var(--accent); }
+
+/* Theme toggle */
+.theme-toggle {
+  background: var(--toggle-bg);
+  border: none;
+  border-radius: 20px;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+  position: relative;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.theme-toggle::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  transition: transform 0.2s;
+}
+[data-theme="dark"] .theme-toggle::after { transform: translateX(20px); }
+.theme-toggle-wrap { display: flex; align-items: center; gap: 8px; }
+.theme-toggle-wrap span { font-size: 14px; line-height: 1; }
+
+/* Content */
+.content { padding: 36px 40px; }
+
+/* Date badge */
+.date-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--badge-bg);
+  color: var(--header-text);
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 28px;
+  letter-spacing: 0.3px;
+}
+
+/* Sections */
+.section { margin-bottom: 36px; }
+.section-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+}
+
+/* News items */
+.news-item {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  transition: box-shadow 0.15s;
+}
+.news-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+[data-theme="dark"] .news-item:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.news-item strong {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 5px;
+  line-height: 1.4;
+}
+.news-item p { font-size: 14px; color: var(--text-muted); line-height: 1.6; }
+.news-item .source {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.news-item .source::before { content: "↗"; font-size: 10px; }
+.news-item .source a { color: var(--accent); font-weight: 500; }
+
+/* Watchlist */
+.watchlist {
+  background: var(--watchlist-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--watchlist-border);
+  padding: 20px 24px;
+  border-radius: 0 10px 10px 0;
+  margin-top: 8px;
+}
+.watchlist h3 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.8px;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.watchlist ul { padding-left: 0; list-style: none; }
+.watchlist li {
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 10px;
+  padding-left: 16px;
+  position: relative;
+  line-height: 1.5;
+}
+.watchlist li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+.watchlist li strong { font-weight: 600; }
+
+/* Archive list */
+.archive-list { list-style: none; }
+.archive-list li {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  margin-bottom: 8px;
+  transition: box-shadow 0.15s;
+}
+.archive-list li:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+.archive-list li a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  text-decoration: none;
+}
+.archive-list li a:hover { color: var(--accent); }
+.archive-list li a span { font-size: 13px; color: var(--text-muted); font-weight: 400; }
+
+/* Footer */
+.site-footer {
+  background: var(--footer-bg);
+  padding: 20px 40px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--footer-text);
+  margin-top: 12px;
+}
+
+@media (max-width: 600px) {
+  .site-header, .content { padding: 18px 20px; }
+  .site-footer { padding: 18px 20px; }
+}
+
+/* AI banner */
+.ai-banner {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  border-radius: 0 10px 10px 0;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  text-decoration: none;
+  transition: box-shadow 0.15s, background 0.15s;
+}
+.ai-banner:hover {
+  box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+  background: var(--accent-light);
+  text-decoration: none;
+}
+[data-theme="dark"] .ai-banner:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+.ai-banner-icon { font-size: 20px; flex-shrink: 0; }
+.ai-banner-text { flex: 1; font-size: 14px; color: var(--text-muted); }
+.ai-banner-text strong { color: var(--text); font-weight: 600; display: block; margin-bottom: 2px; }
+.ai-banner-arrow { color: var(--accent); font-size: 18px; font-weight: 600; flex-shrink: 0; }
+
+/* Weather block */
+.weather-block { margin-bottom: 8px; }
+.weather-today {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 4px 0;
+  margin-bottom: 12px;
+}
+.weather-hour-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 18px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+.weather-hour-row:last-child { border-bottom: none; }
+.weather-hour-time { width: 44px; font-weight: 600; color: var(--text); flex-shrink: 0; }
+.weather-hour-icon { font-size: 18px; flex-shrink: 0; }
+.weather-hour-temp { width: 42px; font-weight: 700; font-size: 15px; color: var(--text); flex-shrink: 0; }
+.weather-hour-detail { color: var(--text-muted); font-size: 13px; min-width: 72px; }
+.weather-forecast { display: flex; gap: 10px; flex-wrap: wrap; }
+.weather-forecast-card {
+  flex: 1;
+  min-width: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 12px;
+  text-align: center;
+}
+.weather-fc-label {
+  font-size: 11px; font-weight: 600; color: var(--text-muted);
+  margin-bottom: 6px; letter-spacing: 0.2px;
+}
+.weather-fc-icon { font-size: 24px; margin-bottom: 6px; }
+.weather-fc-temps { font-size: 15px; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+.weather-fc-precip { font-size: 12px; color: var(--text-muted); }
+
+@media (max-width: 600px) {
+  .weather-hour-row { gap: 8px; padding: 10px 14px; }
+  .weather-forecast-card { min-width: 80px; padding: 12px 8px; }
+}
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <header class="site-header">
+    <div class="header-left"><h1>☕ Morgenbrief</h1><p>Nyheter fra de siste 48 timene</p></div>
+    <div class="header-right"><nav><a href="/webside/" class="active">Morgenbrief</a><a href="/webside/ai-nyheter/">🤖 AI-nyheter</a><a href="/webside/archive/">Arkiv</a></nav><div class="theme-toggle-wrap"><span>☀️</span><button class="theme-toggle" onclick="toggleTheme()" aria-label="Bytt tema"></button><span>🌙</span></div></div>
+  </header>
+  <div class="content">
+    <div class="date-badge">📅 onsdag 18. November 2026</div>
+    <a href="/webside/ai-nyheter/" class="ai-banner">
+      <span class="ai-banner-icon">🤖</span>
+      <span class="ai-banner-text"><strong>AI-nyheter</strong> – Internasjonale AI- og tech-nyheter på norsk</span>
+      <span class="ai-banner-arrow">→</span>
+    </a>
+    
+      <div class="weather-block">
+        <div class="section-title"><span>🌤️</span>Vær i Skien</div>
+        <div class="weather-today">
+          
+        <div class="weather-hour-row">
+          <span class="weather-hour-time">15:00</span>
+          <span class="weather-hour-icon" title="Klarvær">☀️</span>
+          <span class="weather-hour-temp">1°</span>
+          <span class="weather-hour-detail">💨 2 m/s</span>
+          <span class="weather-hour-detail">🌧 –</span>
+        </div>
+        <div class="weather-hour-row">
+          <span class="weather-hour-time">18:00</span>
+          <span class="weather-hour-icon" title="Klarvær">🌙</span>
+          <span class="weather-hour-temp">-2°</span>
+          <span class="weather-hour-detail">💨 2 m/s</span>
+          <span class="weather-hour-detail">🌧 –</span>
+        </div>
+        </div>
+        <div class="weather-forecast">
+          
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">torsdag 19. november</div>
+          <div class="weather-fc-icon" title="Lettskyet">🌤️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 –</div>
+        </div>
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">fredag 20. november</div>
+          <div class="weather-fc-icon" title="Klarvær">☀️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 –</div>
+        </div>
+        <div class="weather-forecast-card">
+          <div class="weather-fc-label">lørdag 21. november</div>
+          <div class="weather-fc-icon" title="Lettskyet">🌤️</div>
+          <div class="weather-fc-temps">– / –</div>
+          <div class="weather-fc-precip">🌧 –</div>
+        </div>
+        </div>
+      </div>
+      <hr class="section-divider">
+    
+      
+      <div class="section">
+        <div class="section-title"><span>🏦</span>Bank, finans og næringsliv</div>
+        
+        <div class="news-item">
+          <strong>Equinor rammet av pågående cyberangrep</strong>
+          <p>Oljeselskapet bekjemper fortsatt cyberangrep mot IT-systemer. Ingen data er stjålet og produksjonen er ikke påvirket, men noen ansatte opplever tjenestforstyrrelser.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/equinor_-framleis-pagaande-cyberangrep-1.18084102" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>EU foreslår 45 milliarder euro i Ukraina-lån</strong>
+          <p>EU-kommisjonen vil låne ut 480 milliarder kroner til Ukraina i 2027. Rusland skal betale tilbake når landet ytes erstatning for krigsskap.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/eu-foreslar-lan-pa-45-milliardar-euro-til-ukraina-_-russland-skal-betale-tilbake-1.18084138" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+      </div>
+      <hr class="section-divider">
+      <div class="section">
+        <div class="section-title"><span>🤖</span>Kunstig intelligens og teknologi</div>
+        
+        <div class="news-item">
+          <strong>Nvidia-styret vil ikke gjeninnsette Jensen Huang som styreleder</strong>
+          <p>Huang gikk av forrige uke, men sier han er åpen for comeback som toppsjef hvis styret ønsker det. Han skal vitne for Kongressen 1. desember.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/jensen-huang-apen-for-comeback-1.18083780" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>USA gransker Nvidia-saken</strong>
+          <p>Amerikanske finanstilsynet undersøker forholdene rundt Jensen Huangs avgang fra teknologigiganten sist uke.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/it-bransjen/nvidia-granskes-av-finanstilsynet-i-usa/7185537" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Kinesisk batterigigant Catl satser i Norge</strong>
+          <p>Yes-Eu og Catl vil reparere og gjenbruke elbil-batterier. Planen er å gjengi brukte batterier nytt liv gjennom ombygging.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/energi/kinesisk-batterigigant-satser-i-norge-vi-har-arbeidet-under-radaren/7143482" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+      </div>
+      <hr class="section-divider">
+      <div class="section">
+        <div class="section-title"><span>🏛️</span>Norsk politikk og samfunn</div>
+        
+        <div class="news-item">
+          <strong>Regjering foreslår kutt på 500 millioner til Posten</strong>
+          <p>Ap-nestleder Brenna sier kuttet gjør vondt. LO advarer at 2000 av 3000 postansatte kan miste jobben ved omstillingen.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/brenna_-det-som-skjer-med-posten_-gjor-vondt-1.18084059" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Støre vurderer retursentre i tredjeland for migranter</strong>
+          <p>Fremskrittspartiet foreslo at Norge sluttes til EU-initiativ for deportasjonssentre i Rwanda. Støre vil vurdere forslaget grundig.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/store_-vil-vurdere-retursentre-i-tredjeland-1.18084118" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Stortinget stemte nei til utreding av aktiv dødshjelp</strong>
+          <p>Flertall på Stortinget avviser Venstres forslag. Helseminister Vestre sier fokus skal være på styrking av lindrende omsorg.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/tv-2_-stortinget-stemte-nei-til-a-utrede-aktiv-dodshjelp-1.18083686" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+        <div class="news-item">
+          <strong>PST: Sannsynlig risiko for terrorangrep i Norge</strong>
+          <p>Politiets sikkerhetstjeneste mener ekstreme islamister og høyreekstremister sannsynlig vil forsøke terror det neste året.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/politikk/pst-sannsynlig-med-forsok-pa-terror-i-norge/7185523" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>EU kritiserer Norge for langsom implementering av energilover</strong>
+          <p>Utenriksminister Eide møtte EU i Brussel. Regjeringen har sagt den ikke vil innføre fem EU-energilover i denne stortingsperioden.</p>
+          <span class="source">Kilde: <a href="https://www.nrk.no/nyheter/eu-med-kritikk-av-norge-1.18083743" target="_blank" rel="noopener">NRK Siste</a></span>
+        </div>
+      </div>
+      <hr class="section-divider">
+      <div class="section">
+        <div class="section-title"><span>⚡</span>Energi og strøm</div>
+        
+        <div class="news-item">
+          <strong>Statnett-frys rammet 18 datasenter-reserver</strong>
+          <p>Bare 6 av 24 reservasjoner frem til 1. august får gå normalt. Resten rammes av Statnetts restriktive energipolitikk.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/datasenter/disse-naert-forestaende-datasentrene-rammes-av-statnett-frysen/7184775" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Datasentre er klimagassverstinger</strong>
+          <p>USA's 400 største datasentre hadde større klimagassutslipp på ett år enn hele Danmark. KI-galoppen forverre situasjonen ytterligere.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/energi/ny-studie-datasentre-er-klimagassverstinger/7185122" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+        <div class="news-item">
+          <strong>Statfjord-plattform skal hakkes opp på byggeplassen</strong>
+          <p>Norsk energihistorie blir demonert der den ble bygget for nesten 50 år siden. En avtale er nå på plass for opphuggingen.</p>
+          <span class="source">Kilde: <a href="https://www.tu.no/energi/far-avtale-om-a-ta-fra-hverandre-statfjord-a-plattformen/7185176" target="_blank" rel="noopener">Teknisk Ukeblad</a></span>
+        </div>
+      </div>
+    
+      <div class="watchlist">
+        <h3>💡 Verdt å følge med på</h3>
+        <ul><li><strong>Equinor-cyberangrep</strong> – Fortsetter dagene etter først melding – kan påvirke oljeproduksjon og avsløre datalekasjer.</li><li><strong>Jensen Huang og Nvidia-saken</strong> – Kongresstestimoni 1. desember og SEC-gransking kan få betydning for Nvidias ledelse og strategi.</li><li><strong>Posten-kutt og arbeidstakerprotester</strong> – LO-forhandlinger med SV, Rødt, MDG og Sp om budsjettet kan påvirke endelige jobbutfall.</li><li><strong>Trump-Xi-Putin-møtet i Kina</strong> – Møtet torsdag kan signalisere nye geopolitiske alliansekapsler eller konfrontasjoner.</li><li><strong>Iran-USA militæreskalering</strong> – Gjentatte angrep mellom Iran og USA i Mellom-Østen øker risikoen for større konflikt.</li></ul>
+      </div>
+  </div>
+  <footer class="site-footer">
+    Automatisk generert av Claude · onsdag 18. November 2026 · Kilder: NRK, E24, Nettavisen, Digi.no m.fl.
+  </footer>
+</div>
+</body>
+</html>
